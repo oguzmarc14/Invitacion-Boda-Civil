@@ -1,50 +1,38 @@
 ---
 import Welcome from '../components/Welcome.astro';
 import Home from '../components/Home.astro';
+import InvitationSections from '../components/InvitationSections.astro';
 import Layout from '../layouts/Layout.astro';
-
-const invitation = {
-	novia: 'Andrea',
-	novio: 'Carlos',
-	fecha: '31.12.2027',
-	fechaObjetivo: '2027-12-31T17:00:00-06:00',
-	titulo: 'Boda civil',
-	mensajeInvitacion:
-		'Con inmensa alegría queremos invitarte a compartir con nosotros el comienzo de esta nueva etapa de nuestras vidas.',
-	imagen: '/images/welcome-couple.webp',
-	cancion: '',
-};
+import { invitation } from '../data/invitation';
 ---
 
-<Layout title={`${invitation.novio} & ${invitation.novia} | Nuestra boda`}>
+<Layout title={`${invitation.pareja.novio} & ${invitation.pareja.novia} | Nuestra boda`}>
 	<Welcome
-		novia={invitation.novia}
-		novio={invitation.novio}
-		fecha={invitation.fecha}
-		fechaObjetivo={invitation.fechaObjetivo}
-		imagen={invitation.imagen}
-		tieneMusica={Boolean(invitation.cancion)}
+		novia={invitation.pareja.novia}
+		novio={invitation.pareja.novio}
+		fecha={invitation.evento.fechaCorta}
+		fechaObjetivo={invitation.evento.inicio}
+		imagen={invitation.imagenes.portada}
+		tieneMusica={Boolean(invitation.musica.src)}
 	/>
 
-	<Home
-		novia={invitation.novia}
-		novio={invitation.novio}
-		fecha={invitation.fecha}
-		fechaObjetivo={invitation.fechaObjetivo}
-		titulo={invitation.titulo}
-		mensajeInvitacion={invitation.mensajeInvitacion}
-	/>
+	<main>
+		<Home
+			novia={invitation.pareja.novia}
+			novio={invitation.pareja.novio}
+			fecha={invitation.evento.fechaLarga}
+			fechaObjetivo={invitation.evento.inicio}
+			titulo={invitation.evento.titulo}
+			mensajeInvitacion={invitation.textos.invitacion}
+		/>
 
-	{
-		invitation.cancion && (
-			<>
-				<audio id="wedding-music" src={invitation.cancion} preload="auto" loop></audio>
-				<button class="music-button" type="button" data-music-button aria-label="Pausar música">
-					<span aria-hidden="true">♫</span>
-				</button>
-			</>
-		)
-	}
+		<InvitationSections invitation={invitation} />
+	</main>
+
+	<audio id="wedding-music" src={invitation.musica.src} preload="auto" loop></audio>
+	<button class="music-button" type="button" data-music-button aria-label="Pausar música">
+		<span aria-hidden="true">♫</span>
+	</button>
 </Layout>
 
 <script>

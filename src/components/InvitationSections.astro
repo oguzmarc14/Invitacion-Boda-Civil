@@ -1,0 +1,1058 @@
+---
+import type { Invitation } from '../data/invitation';
+
+interface Props {
+	invitation: Invitation;
+}
+
+const { invitation } = Astro.props;
+const { pareja, evento, textos, imagenes, itinerario, vestimenta, regalos, rsvp, avisos } = invitation;
+
+const calendarDate = (isoDate: string) =>
+	new Date(isoDate).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+
+const calendarParams = new URLSearchParams({
+	action: 'TEMPLATE',
+	text: `${evento.titulo} · ${pareja.novio} & ${pareja.novia}`,
+	dates: `${calendarDate(evento.inicio)}/${calendarDate(evento.fin)}`,
+	details: `Acompáñanos a celebrar la boda de ${pareja.novio} y ${pareja.novia}.`,
+	location: `${evento.salon}, ${evento.direccion}`,
+});
+
+const calendarUrl = `https://calendar.google.com/calendar/render?${calendarParams.toString()}`;
+const guestOptions = Array.from({ length: rsvp.maxAcompanantes + 1 }, (_, index) => index);
+---
+
+<nav class="section-nav" aria-label="Secciones de la invitación">
+	<a href="#historia">Nosotros</a>
+	<a href="#galeria">Galería</a>
+	<a href="#evento">Evento</a>
+	<a href="#ubicacion">Ubicación</a>
+	<a href="#confirmacion">Confirmar</a>
+</nav>
+
+<section class="section story" id="historia">
+	<div class="story__photo-wrap">
+		<img src={imagenes.portada} alt={`Fotografía de ${pareja.novio} y ${pareja.novia}`} loading="lazy" />
+		<span aria-hidden="true">Nuestra historia</span>
+	</div>
+
+	<div class="story__content">
+		<div class="section-heading section-heading--left">
+			<span>Un nuevo capítulo</span>
+			<h2>El comienzo de nuestro para siempre</h2>
+		</div>
+		<p>{textos.mensaje}</p>
+		<strong>{pareja.novio} &amp; {pareja.novia}</strong>
+	</div>
+</section>
+
+<section class="section countdown-section" data-event-countdown data-event-date={evento.inicio}>
+	<div class="countdown-section__content">
+		<div class="section-heading section-heading--light">
+			<span>Cada vez falta menos</span>
+			<h2>Cuenta regresiva</h2>
+		</div>
+
+		<div class="event-countdown" aria-label="Cuenta regresiva para la boda">
+			<div><strong data-event-days>000</strong><span>Días</span></div>
+			<div><strong data-event-hours>00</strong><span>Horas</span></div>
+			<div><strong data-event-minutes>00</strong><span>Minutos</span></div>
+			<div><strong data-event-seconds>00</strong><span>Segundos</span></div>
+		</div>
+
+		<a class="button button--light" href={calendarUrl} target="_blank" rel="noreferrer">
+			Agregar al calendario
+		</a>
+	</div>
+</section>
+
+<section class="section gallery" id="galeria">
+	<div class="section-heading">
+		<span>Instantes que amamos</span>
+		<h2>Nuestra galería</h2>
+		<p>Algunos recuerdos del camino que nos trajo hasta aquí.</p>
+	</div>
+
+	<div class="gallery__grid">
+		{imagenes.galeria.map((imagen, index) => (
+			<figure class:list={['gallery__item', { 'gallery__item--featured': index === 0 }]}>
+				<img
+					src={imagen.src}
+					alt={imagen.alt}
+					loading="lazy"
+					style={`object-position: ${imagen.posicion}`}
+				/>
+				<span aria-hidden="true">0{index + 1}</span>
+			</figure>
+		))}
+	</div>
+</section>
+
+<section class="section event" id="evento">
+	<div class="section-heading">
+		<span>Guarda este momento</span>
+		<h2>Detalles del evento</h2>
+	</div>
+
+	<div class="event__summary">
+		<div>
+			<span>Día</span>
+			<strong>{evento.fechaLarga}</strong>
+		</div>
+		<div>
+			<span>Ceremonia</span>
+			<strong>{evento.horaCeremonia}</strong>
+		</div>
+		<div>
+			<span>Recepción</span>
+			<strong>{evento.horaRecepcion}</strong>
+		</div>
+	</div>
+
+	<div class="timeline" aria-label="Itinerario de la boda">
+		{itinerario.map((momento, index) => (
+			<article class="timeline__item">
+				<div class="timeline__marker" aria-hidden="true">{index + 1}</div>
+				<time>{momento.hora}</time>
+				<div>
+					<h3>{momento.titulo}</h3>
+					<p>{momento.detalle}</p>
+				</div>
+			</article>
+		))}
+	</div>
+</section>
+
+<section class="section location" id="ubicacion">
+	<div class="location__pin" aria-hidden="true">
+		<svg viewBox="0 0 24 24">
+			<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"></path>
+			<circle cx="12" cy="10" r="2.5"></circle>
+		</svg>
+	</div>
+
+	<div class="section-heading section-heading--light">
+		<span>Nos vemos en</span>
+		<h2>{evento.salon}</h2>
+		<p>{evento.direccion}</p>
+	</div>
+
+	<div class="location__actions">
+		<a class="button button--light" href={evento.mapsUrl} target="_blank" rel="noreferrer">Google Maps</a>
+		<a class="button button--outline" href={evento.wazeUrl} target="_blank" rel="noreferrer">Abrir en Waze</a>
+	</div>
+</section>
+
+<section class="section dress-code" id="vestimenta">
+	<div class="section-heading">
+		<span>Para celebrar juntos</span>
+		<h2>Código de vestimenta</h2>
+	</div>
+
+	<div class="dress-code__card">
+		<div class="dress-code__icon" aria-hidden="true">✦</div>
+		<strong>{vestimenta.codigo}</strong>
+		<p>{vestimenta.descripcion}</p>
+		<small>{vestimenta.reservados}</small>
+
+		<div class="dress-code__colors" aria-label="Colores sugeridos">
+			<span style="--color: #28190a"></span>
+			<span style="--color: #6d6853"></span>
+			<span style="--color: #704c32"></span>
+			<span style="--color: #a57a4f"></span>
+			<span style="--color: #c69c70"></span>
+		</div>
+	</div>
+</section>
+
+<section class="section gifts" id="regalos">
+	<div class="gifts__content">
+		<div class="section-heading section-heading--left">
+			<span>Con mucho cariño</span>
+			<h2>{regalos.titulo}</h2>
+		</div>
+		<p>{regalos.mensaje}</p>
+
+		<div class="gifts__event">
+			<span>{regalos.tienda}</span>
+			<strong>Evento {regalos.numeroEvento}</strong>
+		</div>
+
+		{regalos.url !== '#' && (
+			<a class="button button--olive" href={regalos.url} target="_blank" rel="noreferrer">Ver mesa de regalos</a>
+		)}
+	</div>
+	<div class="gifts__monogram" aria-hidden="true">{pareja.novio.charAt(0)} &amp; {pareja.novia.charAt(0)}</div>
+</section>
+
+<section class="section notices" aria-label="Información adicional">
+	<div class="section-heading section-heading--light">
+		<span>Información importante</span>
+		<h2>Antes de acompañarnos</h2>
+	</div>
+
+	<div class="notices__grid">
+		{avisos.map((aviso, index) => (
+			<article>
+				<span aria-hidden="true">0{index + 1}</span>
+				<h3>{aviso.titulo}</h3>
+				<p>{aviso.texto}</p>
+			</article>
+		))}
+	</div>
+</section>
+
+<section class="section rsvp" id="confirmacion">
+	<div class="section-heading">
+		<span>Queremos contar contigo</span>
+		<h2>Confirma tu asistencia</h2>
+		<p>Por favor confirma antes del {rsvp.fechaLimite}.</p>
+	</div>
+
+	<form class="rsvp-form" data-rsvp-form data-phone={rsvp.whatsapp}>
+		<label>
+			<span>Nombre completo</span>
+			<input type="text" name="name" autocomplete="name" required placeholder="Escribe tu nombre" />
+		</label>
+
+		<label>
+			<span>¿Nos acompañas?</span>
+			<select name="attendance" required>
+				<option value="" selected disabled>Selecciona una opción</option>
+				<option value="Sí, asistiré">Sí, asistiré</option>
+				<option value="No podré asistir">No podré asistir</option>
+			</select>
+		</label>
+
+		<label>
+			<span>Acompañantes</span>
+			<select name="guests">
+				{guestOptions.map((cantidad) => <option value={cantidad}>{cantidad}</option>)}
+			</select>
+		</label>
+
+		<label>
+			<span>Mensaje o restricción alimentaria</span>
+			<textarea name="message" rows="3" placeholder="Opcional"></textarea>
+		</label>
+
+		<button class="button button--olive rsvp-form__submit" type="submit">Confirmar por WhatsApp</button>
+	</form>
+</section>
+
+<footer class="closing">
+	<img src={imagenes.portada} alt="" loading="lazy" aria-hidden="true" />
+	<div class="closing__overlay"></div>
+	<div class="closing__content">
+		<span>Gracias por ser parte de nuestra historia</span>
+		<h2>{pareja.novio} <small>&amp;</small> {pareja.novia}</h2>
+		<p>{textos.cierre}</p>
+		<time datetime={evento.inicio}>{evento.fechaLarga}</time>
+	</div>
+</footer>
+
+<script>
+	const countdown = document.querySelector<HTMLElement>('[data-event-countdown]');
+	const eventDate = countdown?.dataset.eventDate;
+	const targetDate = eventDate ? new Date(eventDate).getTime() : Date.now();
+	const twoDigits = (value: number) => String(value).padStart(2, '0');
+
+	const updateEventCountdown = () => {
+		const remaining = Math.max(0, targetDate - Date.now());
+		const values = {
+			'[data-event-days]': String(Math.floor(remaining / 86_400_000)),
+			'[data-event-hours]': twoDigits(Math.floor((remaining / 3_600_000) % 24)),
+			'[data-event-minutes]': twoDigits(Math.floor((remaining / 60_000) % 60)),
+			'[data-event-seconds]': twoDigits(Math.floor((remaining / 1_000) % 60)),
+		};
+
+		Object.entries(values).forEach(([selector, value]) => {
+			const element = countdown?.querySelector<HTMLElement>(selector);
+			if (element) element.textContent = value;
+		});
+	};
+
+	updateEventCountdown();
+	window.setInterval(updateEventCountdown, 1000);
+
+	const rsvpForm = document.querySelector<HTMLFormElement>('[data-rsvp-form]');
+	rsvpForm?.addEventListener('submit', (event) => {
+		event.preventDefault();
+		const formData = new FormData(rsvpForm);
+		const phone = rsvpForm.dataset.phone ?? '';
+		const message = [
+			'Hola, quiero confirmar mi asistencia a la boda.',
+			`Nombre: ${formData.get('name') ?? ''}`,
+			`Asistencia: ${formData.get('attendance') ?? ''}`,
+			`Acompañantes: ${formData.get('guests') ?? '0'}`,
+			`Mensaje: ${formData.get('message') || 'Sin comentarios'}`,
+		].join('\n');
+
+		window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+	});
+</script>
+
+<style>
+	.section {
+		position: relative;
+		width: 100%;
+		padding: clamp(4.8rem, 12vw, 7rem) 1.25rem;
+	}
+
+	.section-heading {
+		width: min(100%, 38rem);
+		margin: 0 auto 2.5rem;
+		text-align: center;
+	}
+
+	.section-heading--left {
+		margin-inline: 0;
+		text-align: left;
+	}
+
+	.section-heading > span {
+		display: block;
+		color: #6d6853;
+		font-size: 0.58rem;
+		font-weight: 700;
+		letter-spacing: 0.3em;
+		text-transform: uppercase;
+	}
+
+	.section-heading h2 {
+		margin: 0.65rem 0 0;
+		color: #28190a;
+		font-size: clamp(2rem, 8vw, 3.8rem);
+		font-weight: 400;
+		line-height: 1.08;
+	}
+
+	.section-heading p {
+		margin: 1rem auto 0;
+		color: #704c32;
+		font-size: 0.9rem;
+		line-height: 1.7;
+	}
+
+	.section-heading--light > span,
+	.section-heading--light h2,
+	.section-heading--light p {
+		color: #fefcf8;
+	}
+
+	.button {
+		min-height: 3rem;
+		padding: 0.85rem 1.35rem;
+		border: 1px solid transparent;
+		border-radius: 999px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		color: #28190a;
+		font-size: 0.62rem;
+		font-weight: 700;
+		letter-spacing: 0.17em;
+		text-decoration: none;
+		text-transform: uppercase;
+		transition: 220ms ease;
+	}
+
+	.button:hover {
+		transform: translateY(-3px);
+	}
+
+	.button--light {
+		background: #fefcf8;
+		box-shadow: 0 0.75rem 2rem rgba(40, 25, 10, 0.22);
+	}
+
+	.button--outline {
+		border-color: rgba(254, 252, 248, 0.72);
+		color: #fefcf8;
+	}
+
+	.button--olive {
+		background: #6d6853;
+		color: #fefcf8;
+		box-shadow: 0 0.7rem 1.7rem rgba(40, 25, 10, 0.18);
+	}
+
+	.section-nav {
+		position: sticky;
+		z-index: 20;
+		top: 0;
+		width: 100%;
+		overflow-x: auto;
+		display: flex;
+		justify-content: flex-start;
+		gap: 0.3rem;
+		padding: 0.75rem 1rem;
+		background: rgba(254, 252, 248, 0.93);
+		box-shadow: 0 0.5rem 1.5rem rgba(40, 25, 10, 0.07);
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+	}
+
+	.section-nav a {
+		flex: 0 0 auto;
+		padding: 0.55rem 0.8rem;
+		border: 1px solid #ece4d9;
+		border-radius: 999px;
+		color: #28190a;
+		font-size: 0.55rem;
+		letter-spacing: 0.12em;
+		text-decoration: none;
+		text-transform: uppercase;
+	}
+
+	.story {
+		display: grid;
+		align-items: center;
+		gap: 3rem;
+		background: #fefcf8;
+	}
+
+	.story__photo-wrap {
+		position: relative;
+		width: min(84%, 28rem);
+		height: min(60svh, 36rem);
+		min-height: 27rem;
+		margin: 0 auto;
+	}
+
+	.story__photo-wrap::before {
+		position: absolute;
+		inset: 1rem -1rem -1rem 1rem;
+		content: '';
+		background: #6d6853;
+	}
+
+	.story__photo-wrap img {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		display: block;
+		object-fit: cover;
+		object-position: center 30%;
+		filter: saturate(0.84);
+	}
+
+	.story__photo-wrap span {
+		position: absolute;
+		right: -1.8rem;
+		bottom: 2rem;
+		padding: 0.7rem 1rem;
+		background: #28190a;
+		color: #fefcf8;
+		font-size: 0.55rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		transform: rotate(-90deg) translateX(100%);
+		transform-origin: right bottom;
+	}
+
+	.story__content {
+		width: min(100%, 36rem);
+		margin: 0 auto;
+	}
+
+	.story__content > p {
+		margin: 0;
+		color: #704c32;
+		font-size: 1rem;
+		line-height: 1.9;
+	}
+
+	.story__content > strong {
+		margin-top: 1.5rem;
+		display: block;
+		color: #6d6853;
+		font-family: 'Parisienne', cursive;
+		font-size: 2.3rem;
+		font-weight: 400;
+	}
+
+	.countdown-section {
+		overflow: hidden;
+		background: #28190a;
+		color: #fefcf8;
+		text-align: center;
+	}
+
+	.countdown-section::before {
+		position: absolute;
+		top: -9rem;
+		right: -8rem;
+		width: 20rem;
+		height: 20rem;
+		border: 1px solid rgba(222, 199, 173, 0.2);
+		border-radius: 50%;
+		content: '';
+	}
+
+	.countdown-section__content {
+		position: relative;
+		z-index: 1;
+	}
+
+	.event-countdown {
+		width: min(100%, 38rem);
+		margin: 0 auto 2.4rem;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0.5rem;
+	}
+
+	.event-countdown div {
+		padding: 1.15rem 0.25rem;
+		border: 1px solid rgba(222, 199, 173, 0.3);
+		background: rgba(109, 104, 83, 0.18);
+	}
+
+	.event-countdown strong,
+	.event-countdown span {
+		display: block;
+	}
+
+	.event-countdown strong {
+		font-size: clamp(1.45rem, 7vw, 2.6rem);
+		font-weight: 400;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.event-countdown span {
+		margin-top: 0.4rem;
+		color: #dec7ad;
+		font-size: clamp(0.4rem, 1.8vw, 0.55rem);
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+	}
+
+	.gallery {
+		background: #ece4d9;
+	}
+
+	.gallery__grid {
+		width: min(100%, 68rem);
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.75rem;
+	}
+
+	.gallery__item {
+		position: relative;
+		height: 15rem;
+		margin: 0;
+		overflow: hidden;
+		background: #6d6853;
+	}
+
+	.gallery__item--featured {
+		grid-column: 1 / -1;
+		height: 25rem;
+	}
+
+	.gallery__item img {
+		width: 100%;
+		height: 100%;
+		display: block;
+		object-fit: cover;
+		filter: saturate(0.78) contrast(0.95);
+		transition: transform 700ms ease;
+	}
+
+	.gallery__item:hover img {
+		transform: scale(1.04);
+	}
+
+	.gallery__item span {
+		position: absolute;
+		right: 0.7rem;
+		bottom: 0.6rem;
+		color: #fefcf8;
+		font-size: 0.55rem;
+		letter-spacing: 0.15em;
+	}
+
+	.event {
+		background: #fefcf8;
+	}
+
+	.event__summary {
+		width: min(100%, 56rem);
+		margin: 0 auto 4rem;
+		display: grid;
+		border: 1px solid #ece4d9;
+	}
+
+	.event__summary > div {
+		padding: 1.5rem 1rem;
+		text-align: center;
+	}
+
+	.event__summary > div + div {
+		border-top: 1px solid #ece4d9;
+	}
+
+	.event__summary span,
+	.event__summary strong {
+		display: block;
+	}
+
+	.event__summary span {
+		color: #6d6853;
+		font-size: 0.55rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+	}
+
+	.event__summary strong {
+		margin-top: 0.55rem;
+		color: #28190a;
+		font-size: 1rem;
+		font-weight: 400;
+	}
+
+	.timeline {
+		position: relative;
+		width: min(100%, 40rem);
+		margin: 0 auto;
+	}
+
+	.timeline::before {
+		position: absolute;
+		top: 1.2rem;
+		bottom: 1.2rem;
+		left: 1.1rem;
+		width: 1px;
+		content: '';
+		background: #6d6853;
+	}
+
+	.timeline__item {
+		position: relative;
+		padding: 0 0 2.25rem 3.7rem;
+		display: grid;
+		gap: 0.5rem;
+	}
+
+	.timeline__marker {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 2.2rem;
+		height: 2.2rem;
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		background: #6d6853;
+		color: #fefcf8;
+		font-size: 0.62rem;
+	}
+
+	.timeline__item time {
+		color: #a57a4f;
+		font-size: 0.62rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+
+	.timeline__item h3 {
+		margin: 0;
+		color: #28190a;
+		font-size: 1.15rem;
+		font-weight: 400;
+	}
+
+	.timeline__item p {
+		margin: 0.3rem 0 0;
+		color: #704c32;
+		font-size: 0.82rem;
+		line-height: 1.6;
+	}
+
+	.location {
+		overflow: hidden;
+		background: #6d6853;
+		color: #fefcf8;
+		text-align: center;
+	}
+
+	.location::before,
+	.location::after {
+		position: absolute;
+		border: 1px solid rgba(254, 252, 248, 0.13);
+		border-radius: 50%;
+		content: '';
+	}
+
+	.location::before {
+		top: -10rem;
+		left: -8rem;
+		width: 19rem;
+		height: 19rem;
+	}
+
+	.location::after {
+		right: -11rem;
+		bottom: -14rem;
+		width: 27rem;
+		height: 27rem;
+	}
+
+	.location__pin {
+		position: relative;
+		z-index: 1;
+		width: 4.2rem;
+		height: 4.2rem;
+		margin: 0 auto 1.4rem;
+		border: 1px solid #dec7ad;
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		background: #28190a;
+	}
+
+	.location__pin svg {
+		width: 1.6rem;
+		fill: none;
+		stroke: #fefcf8;
+		stroke-width: 1.4;
+	}
+
+	.location__actions {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+	}
+
+	.dress-code {
+		background: #fefcf8;
+	}
+
+	.dress-code__card {
+		width: min(100%, 35rem);
+		margin: 0 auto;
+		padding: 2.4rem 1.5rem;
+		border: 1px solid #ece4d9;
+		box-shadow: 0.75rem 0.75rem 0 #ece4d9;
+		text-align: center;
+	}
+
+	.dress-code__icon {
+		color: #6d6853;
+		font-size: 1.3rem;
+	}
+
+	.dress-code__card strong {
+		margin-top: 0.85rem;
+		display: block;
+		color: #28190a;
+		font-size: 1.1rem;
+		font-weight: 400;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.dress-code__card p {
+		margin: 1rem auto;
+		color: #704c32;
+		font-size: 0.88rem;
+		line-height: 1.7;
+	}
+
+	.dress-code__card small {
+		color: #6d6853;
+		font-size: 0.7rem;
+		font-style: italic;
+	}
+
+	.dress-code__colors {
+		margin-top: 1.5rem;
+		display: flex;
+		justify-content: center;
+		gap: 0.55rem;
+	}
+
+	.dress-code__colors span {
+		width: 2rem;
+		height: 2rem;
+		border: 2px solid #fefcf8;
+		border-radius: 50%;
+		background: var(--color);
+		box-shadow: 0 0 0 1px #ece4d9;
+	}
+
+	.gifts {
+		display: grid;
+		align-items: center;
+		gap: 2rem;
+		background: #ece4d9;
+	}
+
+	.gifts__content {
+		width: min(100%, 36rem);
+		margin: 0 auto;
+	}
+
+	.gifts__content > p {
+		color: #704c32;
+		font-size: 0.9rem;
+		line-height: 1.8;
+	}
+
+	.gifts__event {
+		margin: 1.5rem 0;
+		padding: 1.25rem;
+		border-left: 0.35rem solid #6d6853;
+		background: #fefcf8;
+	}
+
+	.gifts__event span,
+	.gifts__event strong {
+		display: block;
+	}
+
+	.gifts__event span {
+		color: #6d6853;
+		font-size: 0.58rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+
+	.gifts__event strong {
+		margin-top: 0.45rem;
+		color: #28190a;
+		font-weight: 400;
+	}
+
+	.gifts__monogram {
+		width: 11rem;
+		height: 11rem;
+		margin: 0 auto;
+		border: 1px solid #dec7ad;
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		background: #28190a;
+		color: #fefcf8;
+		font-family: 'Parisienne', cursive;
+		font-size: 3.5rem;
+	}
+
+	.notices {
+		background: #28190a;
+		color: #fefcf8;
+	}
+
+	.notices__grid {
+		width: min(100%, 62rem);
+		margin: 0 auto;
+		display: grid;
+		gap: 0.8rem;
+	}
+
+	.notices__grid article {
+		padding: 1.5rem;
+		border: 1px solid rgba(222, 199, 173, 0.26);
+		background: rgba(109, 104, 83, 0.14);
+	}
+
+	.notices__grid article > span {
+		color: #dec7ad;
+		font-size: 0.55rem;
+		letter-spacing: 0.15em;
+	}
+
+	.notices__grid h3 {
+		margin: 0.7rem 0 0;
+		font-size: 1.05rem;
+		font-weight: 400;
+	}
+
+	.notices__grid p {
+		margin: 0.55rem 0 0;
+		color: #ece4d9;
+		font-size: 0.8rem;
+		line-height: 1.65;
+	}
+
+	.rsvp {
+		background: #fefcf8;
+	}
+
+	.rsvp-form {
+		width: min(100%, 35rem);
+		margin: 0 auto;
+		padding: 1.5rem;
+		border: 1px solid #ece4d9;
+		box-shadow: 0.75rem 0.75rem 0 #6d6853;
+	}
+
+	.rsvp-form label {
+		margin-bottom: 1.15rem;
+		display: block;
+	}
+
+	.rsvp-form label > span {
+		margin-bottom: 0.5rem;
+		display: block;
+		color: #28190a;
+		font-size: 0.6rem;
+		font-weight: 700;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+	}
+
+	.rsvp-form input,
+	.rsvp-form select,
+	.rsvp-form textarea {
+		width: 100%;
+		padding: 0.85rem 0;
+		border: 0;
+		border-bottom: 1px solid #6d6853;
+		border-radius: 0;
+		background: transparent;
+		color: #28190a;
+		font-size: 0.9rem;
+		outline: none;
+	}
+
+	.rsvp-form input:focus,
+	.rsvp-form select:focus,
+	.rsvp-form textarea:focus {
+		border-bottom-color: #28190a;
+		box-shadow: 0 1px 0 #28190a;
+	}
+
+	.rsvp-form textarea {
+		resize: vertical;
+	}
+
+	.rsvp-form__submit {
+		width: 100%;
+		margin-top: 0.5rem;
+		cursor: pointer;
+	}
+
+	.closing {
+		position: relative;
+		min-height: 82svh;
+		overflow: hidden;
+		display: grid;
+		place-items: center;
+		color: #fefcf8;
+		text-align: center;
+	}
+
+	.closing > img,
+	.closing__overlay {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.closing > img {
+		object-fit: cover;
+		object-position: center 32%;
+	}
+
+	.closing__overlay {
+		background: linear-gradient(rgba(40, 25, 10, 0.45), rgba(40, 25, 10, 0.88));
+	}
+
+	.closing__content {
+		position: relative;
+		z-index: 1;
+		width: min(88%, 38rem);
+		padding: 2.5rem 1.5rem;
+		border: 1px solid rgba(254, 252, 248, 0.48);
+	}
+
+	.closing__content > span {
+		font-size: 0.56rem;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+	}
+
+	.closing__content h2 {
+		margin: 1.5rem 0;
+		font-family: 'Parisienne', cursive;
+		font-size: clamp(3.6rem, 16vw, 7rem);
+		font-weight: 400;
+		line-height: 0.9;
+	}
+
+	.closing__content h2 small {
+		color: #dec7ad;
+		font-size: 0.55em;
+	}
+
+	.closing__content p {
+		margin: 0 auto;
+		font-size: 0.88rem;
+		line-height: 1.75;
+	}
+
+	.closing__content time {
+		margin-top: 1.5rem;
+		display: block;
+		color: #dec7ad;
+		font-size: 0.65rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+	}
+
+	@media (min-width: 768px) {
+		.section-nav {
+			justify-content: center;
+		}
+
+		.story,
+		.gifts {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			padding-inline: clamp(3rem, 8vw, 8rem);
+		}
+
+		.event__summary {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		.event__summary > div + div {
+			border-top: 0;
+			border-left: 1px solid #ece4d9;
+		}
+
+		.timeline__item {
+			grid-template-columns: 8rem 1fr;
+		}
+
+		.gallery__grid {
+			grid-template-columns: 1.4fr 1fr 1fr;
+		}
+
+		.gallery__item,
+		.gallery__item--featured {
+			grid-column: auto;
+			height: 34rem;
+		}
+
+		.notices__grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.button,
+		.gallery__item img {
+			transition: none;
+		}
+	}
+</style>
