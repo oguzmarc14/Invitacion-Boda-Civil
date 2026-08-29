@@ -1,0 +1,584 @@
+---
+interface Props {
+  novia: string;
+  novio: string;
+  fecha: string;
+  fechaObjetivo: string;
+  imagen: string;
+}
+
+const {
+  novia,
+  novio,
+  fecha,
+  fechaObjetivo,
+  imagen,
+} = Astro.props;
+---
+
+<section
+  class="welcome-screen"
+  data-welcome
+  data-event-date={fechaObjetivo}
+>
+  <img
+    class="welcome-screen__photo"
+    src={imagen}
+    alt={`Fotografía de ${novia} y ${novio}`}
+    loading="eager"
+    fetchpriority="high"
+  />
+
+  <div class="welcome-screen__veil"></div>
+
+  <div class="welcome-screen__content">
+    <svg
+      class="botanical-ornament"
+      viewBox="0 0 190 82"
+      aria-hidden="true"
+    >
+      <path d="M20 68C58 64 75 42 101 17"></path>
+      <path d="M92 27C112 27 135 38 167 56"></path>
+
+      <path d="M65 53c-4-13 1-22 15-27-1 14-5 22-15 27Z"></path>
+      <path d="M45 63c-7-10-5-19 7-28 3 12 1 21-7 28Z"></path>
+      <path d="M80 42c8-12 17-15 29-9-8 10-17 13-29 9Z"></path>
+      <path d="M105 29c2-14 10-20 24-20-3 13-11 19-24 20Z"></path>
+      <path d="M118 32c12-7 22-5 30 6-12 4-22 2-30-6Z"></path>
+      <path d="M137 42c13-5 22-1 28 11-13 2-22-2-28-11Z"></path>
+
+      <path d="M34 66c-9 2-15 8-17 16"></path>
+
+      <circle cx="98" cy="21" r="2.4"></circle>
+      <circle cx="104" cy="16" r="1.8"></circle>
+      <circle cx="111" cy="12" r="1.5"></circle>
+      <circle cx="153" cy="49" r="2"></circle>
+    </svg>
+
+    <div class="couple-card">
+      <h1>{novio} &amp; {novia}</h1>
+
+      <div class="couple-card__date">
+        <span aria-hidden="true">•</span>
+        <time datetime={fechaObjetivo}>{fecha}</time>
+        <span aria-hidden="true">•</span>
+        <span>Nuestra boda</span>
+        <span aria-hidden="true">•</span>
+      </div>
+    </div>
+
+    <div
+      class="countdown"
+      aria-label="Cuenta regresiva para la boda"
+    >
+      <div>
+        <strong data-days>000</strong>
+        <span>Días</span>
+      </div>
+
+      <div>
+        <strong data-hours>00</strong>
+        <span>Horas</span>
+      </div>
+
+      <div>
+        <strong data-minutes>00</strong>
+        <span>Minutos</span>
+      </div>
+
+      <div>
+        <strong data-seconds>00</strong>
+        <span>Segundos</span>
+      </div>
+    </div>
+
+    <button
+      class="open-invitation"
+      type="button"
+      data-open-invitation
+    >
+      <span class="open-invitation__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="m9 7 8 5-8 5V7Z"></path>
+        </svg>
+      </span>
+
+      <span>Abrir invitación</span>
+    </button>
+
+    <p class="music-hint">
+      Esta invitación contiene música
+    </p>
+  </div>
+</section>
+
+<script>
+  const welcome =
+    document.querySelector<HTMLElement>("[data-welcome]");
+
+  const daysElement =
+    welcome?.querySelector<HTMLElement>("[data-days]");
+
+  const hoursElement =
+    welcome?.querySelector<HTMLElement>("[data-hours]");
+
+  const minutesElement =
+    welcome?.querySelector<HTMLElement>("[data-minutes]");
+
+  const secondsElement =
+    welcome?.querySelector<HTMLElement>("[data-seconds]");
+
+  const eventDate = welcome?.dataset.eventDate;
+
+  const targetDate = eventDate
+    ? new Date(eventDate).getTime()
+    : Date.now();
+
+  const twoDigits = (value: number) =>
+    String(value).padStart(2, "0");
+
+  const updateCountdown = () => {
+    const remaining = Math.max(
+      0,
+      targetDate - Date.now()
+    );
+
+    const days = Math.floor(
+      remaining / 86_400_000
+    );
+
+    const hours = Math.floor(
+      (remaining / 3_600_000) % 24
+    );
+
+    const minutes = Math.floor(
+      (remaining / 60_000) % 60
+    );
+
+    const seconds = Math.floor(
+      (remaining / 1_000) % 60
+    );
+
+    if (daysElement) {
+      daysElement.textContent = String(days);
+    }
+
+    if (hoursElement) {
+      hoursElement.textContent = twoDigits(hours);
+    }
+
+    if (minutesElement) {
+      minutesElement.textContent = twoDigits(minutes);
+    }
+
+    if (secondsElement) {
+      secondsElement.textContent = twoDigits(seconds);
+    }
+  };
+
+  updateCountdown();
+
+  const countdownInterval =
+    window.setInterval(updateCountdown, 1000);
+
+  document.addEventListener(
+    "astro:before-swap",
+    () => window.clearInterval(countdownInterval),
+    { once: true }
+  );
+</script>
+
+<style>
+  :global(body:not(.invitation-open)) {
+    overflow: hidden;
+  }
+
+  .welcome-screen {
+    position: fixed;
+    z-index: 100;
+    inset: 0;
+    min-height: 100svh;
+    overflow: hidden;
+    background: #28190a;
+    color: #fefcf8;
+    opacity: 1;
+    transform: scale(1);
+
+    transition:
+      opacity 750ms ease,
+      transform 950ms cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 750ms ease;
+  }
+
+  .welcome-screen.is-leaving {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.035);
+  }
+
+  .welcome-screen__photo,
+  .welcome-screen__veil {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .welcome-screen__photo {
+    display: block;
+    object-fit: cover;
+    object-position: 50% 45%;
+    filter:
+      saturate(0.82)
+      contrast(0.93);
+
+    transform: scale(1.01);
+  }
+
+  .welcome-screen__veil {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(40, 25, 10, 0.03) 20%,
+        rgba(40, 25, 10, 0.14) 47%,
+        rgba(40, 25, 10, 0.84) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(109, 104, 83, 0.08),
+        rgba(112, 76, 50, 0.12)
+      );
+  }
+
+  .welcome-screen__content {
+    position: absolute;
+    z-index: 2;
+    right: 50%;
+    bottom: max(
+      1.4rem,
+      env(safe-area-inset-bottom)
+    );
+
+    width: min(88vw, 29rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    color: #fefcf8;
+    text-align: center;
+
+    transform: translateX(50%);
+
+    animation:
+      welcome-rise
+      1100ms
+      cubic-bezier(0.22, 1, 0.36, 1)
+      both;
+  }
+
+  .botanical-ornament {
+    width: clamp(7.8rem, 38vw, 11rem);
+    height: auto;
+    margin-bottom:
+      clamp(0.45rem, 1.3vh, 0.85rem);
+
+    overflow: visible;
+    fill: #fefcf8;
+    stroke: #fefcf8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+
+  .couple-card {
+    width: 100%;
+    padding:
+      clamp(0.8rem, 2.1vh, 1.05rem)
+      0.8rem
+      clamp(0.7rem, 1.8vh, 0.9rem);
+
+    border: 1px solid
+      rgba(254, 252, 248, 0.82);
+
+    background:
+      rgba(40, 25, 10, 0.06);
+
+    box-shadow:
+      inset 0 0 0 1px
+      rgba(222, 199, 173, 0.08);
+
+    backdrop-filter: blur(1px);
+  }
+
+  .couple-card h1 {
+    margin: 0;
+    color: #fefcf8;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size:
+      clamp(1.18rem, 5.7vw, 2rem);
+
+    font-weight: 400;
+
+    letter-spacing:
+      clamp(0.12em, 0.8vw, 0.2em);
+
+    line-height: 1.15;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    text-shadow:
+      0 2px 12px
+      rgba(40, 25, 10, 0.45);
+  }
+
+  .couple-card__date {
+    margin-top:
+      clamp(0.55rem, 1.25vh, 0.8rem);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size:
+      clamp(0.48rem, 2vw, 0.63rem);
+
+    letter-spacing: 0.17em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .countdown {
+    width: min(94%, 25rem);
+
+    margin-top:
+      clamp(1.3rem, 3.2vh, 2rem);
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    column-gap:
+      clamp(0.55rem, 3.5vw, 1.4rem);
+  }
+
+  .countdown div {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .countdown strong {
+    color: #fefcf8;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size:
+      clamp(1.55rem, 7vw, 2.2rem);
+
+    font-weight: 400;
+    line-height: 1;
+
+    font-variant-numeric:
+      tabular-nums;
+
+    text-shadow:
+      0 2px 11px
+      rgba(40, 25, 10, 0.5);
+  }
+
+  .countdown span {
+    margin-top: 0.45rem;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size:
+      clamp(0.42rem, 1.8vw, 0.58rem);
+
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .open-invitation {
+    min-width: min(15rem, 78vw);
+    min-height: 3rem;
+
+    margin-top:
+      clamp(1.25rem, 3vh, 1.85rem);
+
+    padding: 0.72rem 1.5rem;
+
+    border: 1px solid #dec7ad;
+    border-radius: 999px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+
+    background:
+      rgba(109, 104, 83, 0.9);
+
+    color: #fefcf8;
+
+    box-shadow:
+      0 0.8rem 2rem
+      rgba(40, 25, 10, 0.28);
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size: 0.68rem;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+
+    transition:
+      background-color 250ms ease,
+      border-color 250ms ease,
+      transform 250ms ease;
+  }
+
+  .open-invitation:hover {
+    border-color: #fefcf8;
+    background:
+      rgba(40, 25, 10, 0.92);
+
+    transform: translateY(-2px);
+  }
+
+  .open-invitation:focus-visible {
+    outline: 2px solid #fefcf8;
+    outline-offset: 4px;
+  }
+
+  .open-invitation__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    border: 1px solid
+      rgba(254, 252, 248, 0.62);
+
+    border-radius: 50%;
+
+    display: grid;
+    place-items: center;
+  }
+
+  .open-invitation__icon svg {
+    width: 0.72rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.6;
+  }
+
+  .music-hint {
+    margin: 0.65rem 0 0;
+
+    color:
+      rgba(254, 252, 248, 0.76);
+
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+
+    font-size: 0.54rem;
+    letter-spacing: 0.1em;
+  }
+
+  @keyframes welcome-rise {
+    from {
+      opacity: 0;
+
+      transform:
+        translateX(50%)
+        translateY(1.6rem);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .welcome-screen__photo {
+      object-position: center 42%;
+    }
+
+    .welcome-screen__content {
+      bottom:
+        clamp(2rem, 6vh, 4.75rem);
+
+      width: min(84vw, 32rem);
+    }
+
+    .couple-card h1 {
+      font-size: 2.15rem;
+    }
+
+    .countdown strong {
+      font-size: 2.35rem;
+    }
+  }
+
+  @media (max-height: 660px) {
+    .welcome-screen__content {
+      bottom: 0.8rem;
+      width: min(84vw, 27rem);
+    }
+
+    .botanical-ornament {
+      width: 7rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .couple-card {
+      padding-block: 0.65rem;
+    }
+
+    .countdown {
+      margin-top: 0.85rem;
+    }
+
+    .open-invitation {
+      min-height: 2.65rem;
+      margin-top: 0.9rem;
+    }
+
+    .music-hint {
+      margin-top: 0.35rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .welcome-screen__content {
+      animation: none;
+    }
+
+    .welcome-screen {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>
