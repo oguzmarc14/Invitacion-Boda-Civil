@@ -32,6 +32,7 @@ const {
 	/>
 
 	<div class="welcome-screen__veil"></div>
+	<div class="welcome-screen__glass" aria-hidden="true"></div>
 	<div class="welcome-screen__aura welcome-screen__aura--champagne" aria-hidden="true"></div>
 	<div class="welcome-screen__aura welcome-screen__aura--olive" aria-hidden="true"></div>
 
@@ -175,7 +176,8 @@ const {
 	}
 
 	.welcome-screen__photo,
-	.welcome-screen__veil {
+	.welcome-screen__veil,
+	.welcome-screen__glass {
 		position: absolute;
 		inset: 0;
 		width: 100%;
@@ -201,6 +203,53 @@ const {
 				rgba(40, 25, 10, 0.84) 100%
 			),
 			linear-gradient(90deg, rgba(109, 104, 83, 0.08), rgba(112, 76, 50, 0.12));
+	}
+
+	.welcome-screen__glass {
+		overflow: hidden;
+		background: linear-gradient(
+			125deg,
+			rgba(254, 252, 248, 0.14) 0%,
+			transparent 28%,
+			rgba(222, 199, 173, 0.035) 58%,
+			rgba(236, 228, 217, 0.11) 100%
+		);
+		box-shadow:
+			inset 0 1px 0 rgba(254, 252, 248, 0.34),
+			inset 1px 0 0 rgba(254, 252, 248, 0.16),
+			inset 0 -1px 0 rgba(40, 25, 10, 0.22);
+		-webkit-backdrop-filter: blur(0.8px) saturate(108%);
+		backdrop-filter: blur(0.8px) saturate(108%);
+		pointer-events: none;
+	}
+
+	.welcome-screen__glass::before {
+		position: absolute;
+		top: -18%;
+		left: -42%;
+		width: 32%;
+		height: 140%;
+		content: '';
+		background: linear-gradient(
+			90deg,
+			transparent,
+			rgba(254, 252, 248, 0.12),
+			rgba(254, 252, 248, 0.28),
+			rgba(222, 199, 173, 0.08),
+			transparent
+		);
+		filter: blur(5px);
+		transform: skewX(-18deg);
+		animation: photo-glass-shine 7s ease-in-out infinite;
+	}
+
+	.welcome-screen__glass::after {
+		position: absolute;
+		inset: 0.7rem;
+		content: '';
+		border: 1px solid rgba(254, 252, 248, 0.11);
+		border-radius: 1.2rem;
+		box-shadow: inset 0 0 2rem rgba(222, 199, 173, 0.04);
 	}
 
 	.welcome-screen__aura {
@@ -411,7 +460,10 @@ const {
 		transition:
 			background-color 250ms ease,
 			border-color 250ms ease,
-			transform 250ms ease;
+			box-shadow 250ms ease,
+			color 250ms ease,
+			letter-spacing 250ms ease,
+			transform 250ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	.open-invitation::after {
@@ -432,12 +484,6 @@ const {
 		z-index: 1;
 	}
 
-	.open-invitation:hover {
-		border-color: #fefcf8;
-		background: rgba(40, 25, 10, 0.92);
-		transform: translateY(-2px);
-	}
-
 	.open-invitation:focus-visible {
 		outline: 2px solid #fefcf8;
 		outline-offset: 4px;
@@ -450,6 +496,10 @@ const {
 		border-radius: 50%;
 		display: grid;
 		place-items: center;
+		transition:
+			background-color 250ms ease,
+			border-color 250ms ease,
+			transform 250ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	.open-invitation__icon svg {
@@ -459,6 +509,35 @@ const {
 		stroke-linecap: round;
 		stroke-linejoin: round;
 		stroke-width: 1.6;
+		transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.open-invitation:active {
+		transform: translateY(1px) scale(0.97);
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		.open-invitation:hover {
+			border-color: #fefcf8;
+			background: #dec7ad;
+			color: #28190a;
+			box-shadow:
+				0 0 0 4px rgba(222, 199, 173, 0.18),
+				0 1.1rem 2.4rem rgba(40, 25, 10, 0.38),
+				0 0 1.7rem rgba(222, 199, 173, 0.48);
+			letter-spacing: 0.215em;
+			transform: translateY(-4px) scale(1.045);
+		}
+
+		.open-invitation:hover .open-invitation__icon {
+			border-color: #704c32;
+			background: rgba(254, 252, 248, 0.44);
+			transform: scale(1.14) rotate(-6deg);
+		}
+
+		.open-invitation:hover .open-invitation__icon svg {
+			transform: translateX(1px) scale(1.08);
+		}
 	}
 
 	.music-hint {
@@ -533,6 +612,22 @@ const {
 		}
 	}
 
+	@keyframes photo-glass-shine {
+		0%, 48% {
+			left: -42%;
+			opacity: 0;
+		}
+
+		55% {
+			opacity: 0.72;
+		}
+
+		76%, 100% {
+			left: 132%;
+			opacity: 0;
+		}
+	}
+
 	@keyframes aura-float {
 		to {
 			transform: translate3d(-1.2rem, 1.4rem, 0) scale(1.08);
@@ -588,6 +683,7 @@ const {
 		.welcome-screen__content,
 		.welcome-screen__content::after,
 		.welcome-screen__photo,
+		.welcome-screen__glass::before,
 		.welcome-screen__aura,
 		.botanical-ornament,
 		.couple-card,
