@@ -1,23 +1,71 @@
+---
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = 'Invitación de boda civil',
+	description = 'Acompáñanos a celebrar el comienzo de nuestra historia.',
+} = Astro.props;
+---
+
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#28190A" />
+		<meta name="description" content={description} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{title}</title>
 	</head>
 	<body>
 		<slot />
 	</body>
 </html>
 
-<style>
+<style is:global>
+	:root {
+		--warm-white: #fefcf8;
+		--ivory: #ece4d9;
+		--champagne: #dec7ad;
+		--golden-sand: #c69c70;
+		--honey-wood: #a57a4f;
+		--warm-coffee: #704c32;
+		--olive-gray: #6d6853;
+		--espresso: #28190a;
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
 	html,
 	body {
-		margin: 0;
 		width: 100%;
-		height: 100%;
+		min-width: 320px;
+		min-height: 100%;
+		margin: 0;
+		background: var(--warm-white);
+		color: var(--espresso);
+	}
+
+	html {
+		scroll-behavior: smooth;
+	}
+
+	body {
+		overflow-x: hidden;
+		font-family: Georgia, 'Times New Roman', serif;
+	}
+
+	button,
+	input,
+	textarea,
+	select {
+		font: inherit;
 	}
 </style>

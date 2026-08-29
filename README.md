@@ -1,4 +1,14 @@
-# Astro Starter Kit: Basics
+# Invitación de Boda Civil
+
+Invitación digital construida con Astro. La primera pantalla incluye fotografía
+a pantalla completa, datos de los novios, cuenta regresiva y botón de acceso a
+la invitación.
+
+## Personalización rápida
+
+Edita el objeto `invitation` de `src/pages/index.astro` para cambiar nombres,
+fecha, fotografía y canción. La fotografía de portada está en
+`public/images/welcome-couple.webp`.
 
 ```sh
 npm create astro@latest -- --template basics

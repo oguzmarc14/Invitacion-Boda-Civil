@@ -2,10 +2,155 @@
 import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const invitation = {
+	novia: 'Andrea',
+	novio: 'Carlos',
+	fecha: '31.12.2027',
+	fechaObjetivo: '2027-12-31T17:00:00-06:00',
+	imagen: '/images/welcome-couple.webp',
+	cancion: '',
+};
 ---
 
-<Layout>
-	<Welcome />
+<Layout title={`${invitation.novio} & ${invitation.novia} | Nuestra boda`}>
+	<Welcome
+		novia={invitation.novia}
+		novio={invitation.novio}
+		fecha={invitation.fecha}
+		fechaObjetivo={invitation.fechaObjetivo}
+		imagen={invitation.imagen}
+		tieneMusica={Boolean(invitation.cancion)}
+	/>
+
+	<main class="invitation-content" data-invitation-content>
+		<div class="invitation-content__ornament" aria-hidden="true">✦</div>
+		<p>Bienvenidos a</p>
+		<h2>Nuestra boda</h2>
+		<span>{invitation.novio} &amp; {invitation.novia}</span>
+	</main>
+
+	{
+		invitation.cancion && (
+			<>
+				<audio id="wedding-music" src={invitation.cancion} preload="auto" loop></audio>
+				<button class="music-button" type="button" data-music-button aria-label="Pausar música">
+					<span aria-hidden="true">♫</span>
+				</button>
+			</>
+		)
+	}
 </Layout>
+
+<script>
+	const audio = document.querySelector<HTMLAudioElement>('#wedding-music');
+	const musicButton = document.querySelector<HTMLButtonElement>('[data-music-button]');
+
+	window.addEventListener('invitation:open', async () => {
+		if (!audio) return;
+		musicButton?.classList.add('is-visible');
+
+		try {
+			await audio.play();
+		} catch {
+			musicButton?.classList.add('is-paused');
+		}
+	});
+
+	musicButton?.addEventListener('click', async () => {
+		if (!audio) return;
+
+		if (audio.paused) {
+			await audio.play();
+			musicButton.classList.remove('is-paused');
+			musicButton.setAttribute('aria-label', 'Pausar música');
+		} else {
+			audio.pause();
+			musicButton.classList.add('is-paused');
+			musicButton.setAttribute('aria-label', 'Reproducir música');
+		}
+	});
+</script>
+
+<style>
+	.invitation-content {
+		min-height: 100svh;
+		padding: 3rem 1.5rem;
+		display: grid;
+		place-content: center;
+		background:
+			radial-gradient(circle at top left, rgba(222, 199, 173, 0.42), transparent 30rem),
+			#fefcf8;
+		color: #28190a;
+		text-align: center;
+		opacity: 0;
+		transform: translateY(1rem);
+		transition:
+			opacity 700ms ease 250ms,
+			transform 900ms cubic-bezier(0.22, 1, 0.36, 1) 250ms;
+	}
+
+	.invitation-content.is-visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.invitation-content__ornament {
+		color: #c69c70;
+		font-size: 1rem;
+	}
+
+	.invitation-content p {
+		margin: 1rem 0 0;
+		color: #6d6853;
+		font-size: 0.7rem;
+		letter-spacing: 0.28em;
+		text-transform: uppercase;
+	}
+
+	.invitation-content h2 {
+		margin: 0.6rem 0;
+		color: #704c32;
+		font-size: clamp(3.4rem, 15vw, 7rem);
+		font-style: italic;
+		font-weight: 400;
+	}
+
+	.invitation-content > span {
+		color: #a57a4f;
+		font-size: 0.72rem;
+		letter-spacing: 0.25em;
+		text-transform: uppercase;
+	}
+
+	.music-button {
+		position: fixed;
+		z-index: 50;
+		top: max(1rem, env(safe-area-inset-top));
+		right: 1rem;
+		width: 2.9rem;
+		height: 2.9rem;
+		padding: 0;
+		border: 1px solid #dec7ad;
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		background: rgba(109, 104, 83, 0.92);
+		color: #fefcf8;
+		font-size: 1.15rem;
+		opacity: 0;
+		visibility: hidden;
+		cursor: pointer;
+		transition: 350ms ease;
+	}
+
+	.music-button.is-visible {
+		visibility: visible;
+		opacity: 1;
+	}
+
+	.music-button.is-paused {
+		background: rgba(254, 252, 248, 0.92);
+		color: #a57a4f;
+		transform: scale(0.92);
+	}
+</style>
