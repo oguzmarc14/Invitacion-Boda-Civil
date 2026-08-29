@@ -32,6 +32,8 @@ const {
 	/>
 
 	<div class="welcome-screen__veil"></div>
+	<div class="welcome-screen__aura welcome-screen__aura--champagne" aria-hidden="true"></div>
+	<div class="welcome-screen__aura welcome-screen__aura--olive" aria-hidden="true"></div>
 
 	<div class="welcome-screen__content">
 		<svg
@@ -186,10 +188,12 @@ const {
 		object-position: 50% 45%;
 		filter: saturate(0.82) contrast(0.93);
 		transform: scale(1.01);
+		animation: photo-breathe 18s ease-in-out infinite alternate;
 	}
 
 	.welcome-screen__veil {
 		background:
+			radial-gradient(circle at 76% 18%, rgba(222, 199, 173, 0.18), transparent 30%),
 			linear-gradient(
 				180deg,
 				rgba(40, 25, 10, 0.03) 20%,
@@ -199,19 +203,94 @@ const {
 			linear-gradient(90deg, rgba(109, 104, 83, 0.08), rgba(112, 76, 50, 0.12));
 	}
 
+	.welcome-screen__aura {
+		position: absolute;
+		border-radius: 50%;
+		filter: blur(54px);
+		pointer-events: none;
+	}
+
+	.welcome-screen__aura--champagne {
+		top: 8%;
+		right: -7rem;
+		width: 18rem;
+		height: 18rem;
+		background: rgba(222, 199, 173, 0.2);
+		animation: aura-float 9s ease-in-out infinite alternate;
+	}
+
+	.welcome-screen__aura--olive {
+		bottom: 10%;
+		left: -8rem;
+		width: 20rem;
+		height: 20rem;
+		background: rgba(109, 104, 83, 0.2);
+		animation: aura-float 11s ease-in-out -3s infinite alternate-reverse;
+	}
+
 	.welcome-screen__content {
 		position: absolute;
 		z-index: 2;
 		right: 50%;
 		bottom: max(1.4rem, env(safe-area-inset-bottom));
 		width: min(88vw, 29rem);
+		padding: clamp(1rem, 2.7vh, 1.45rem) clamp(0.85rem, 3.8vw, 1.35rem);
+		overflow: hidden;
+		isolation: isolate;
+		border: 1px solid rgba(254, 252, 248, 0.34);
+		border-radius: 1.65rem;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		background: linear-gradient(
+			145deg,
+			rgba(254, 252, 248, 0.18),
+			rgba(236, 228, 217, 0.07) 46%,
+			rgba(109, 104, 83, 0.16)
+		);
 		color: #fefcf8;
+		box-shadow:
+			inset 0 1px 0 rgba(254, 252, 248, 0.48),
+			inset 0 -1px 0 rgba(222, 199, 173, 0.18),
+			0 1.5rem 4rem rgba(40, 25, 10, 0.3);
 		text-align: center;
 		transform: translateX(50%);
+		-webkit-backdrop-filter: blur(14px) saturate(118%);
+		backdrop-filter: blur(14px) saturate(118%);
 		animation: welcome-rise 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+
+	.welcome-screen__content::before {
+		position: absolute;
+		z-index: -2;
+		inset: 0;
+		content: '';
+		background:
+			radial-gradient(circle at 15% 0%, rgba(254, 252, 248, 0.2), transparent 34%),
+			linear-gradient(115deg, rgba(198, 156, 112, 0.07), transparent 48%);
+		pointer-events: none;
+	}
+
+	.welcome-screen__content::after {
+		position: absolute;
+		z-index: -1;
+		top: -55%;
+		left: -75%;
+		width: 28%;
+		height: 210%;
+		content: '';
+		background: linear-gradient(
+			90deg,
+			transparent,
+			rgba(254, 252, 248, 0.06),
+			rgba(254, 252, 248, 0.42),
+			rgba(222, 199, 173, 0.16),
+			transparent
+		);
+		filter: blur(1px);
+		transform: skewX(-18deg);
+		pointer-events: none;
+		animation: glass-shine 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 	}
 
 	.botanical-ornament {
@@ -224,15 +303,20 @@ const {
 		stroke-linecap: round;
 		stroke-linejoin: round;
 		stroke-width: 1.8;
+		filter: drop-shadow(0 0 0.65rem rgba(222, 199, 173, 0.34));
+		animation: ornament-glow 3s ease-in-out infinite;
 	}
 
 	.couple-card {
+		position: relative;
 		width: 100%;
 		padding: clamp(0.8rem, 2.1vh, 1.05rem) 0.8rem clamp(0.7rem, 1.8vh, 0.9rem);
 		border: 1px solid rgba(254, 252, 248, 0.82);
-		background: rgba(40, 25, 10, 0.06);
-		box-shadow: inset 0 0 0 1px rgba(222, 199, 173, 0.08);
-		backdrop-filter: blur(1px);
+		background: linear-gradient(110deg, rgba(40, 25, 10, 0.1), rgba(254, 252, 248, 0.05));
+		box-shadow:
+			inset 0 0 0 1px rgba(222, 199, 173, 0.08),
+			0 0 1.3rem rgba(222, 199, 173, 0.08);
+		animation: frame-glow 3s ease-in-out infinite;
 	}
 
 	.couple-card h1 {
@@ -270,10 +354,21 @@ const {
 	}
 
 	.countdown div {
+		position: relative;
 		min-width: 0;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
+
+	.countdown div + div::before {
+		position: absolute;
+		top: 0.15rem;
+		bottom: 0.05rem;
+		left: calc(clamp(0.55rem, 3.5vw, 1.4rem) / -2);
+		width: 1px;
+		content: '';
+		background: linear-gradient(transparent, rgba(222, 199, 173, 0.46), transparent);
 	}
 
 	.countdown strong {
@@ -293,6 +388,7 @@ const {
 	}
 
 	.open-invitation {
+		position: relative;
 		min-width: min(15rem, 78vw);
 		min-height: 3rem;
 		margin-top: clamp(1.25rem, 3vh, 1.85rem);
@@ -303,6 +399,7 @@ const {
 		align-items: center;
 		justify-content: center;
 		gap: 0.75rem;
+		overflow: hidden;
 		background: rgba(109, 104, 83, 0.9);
 		color: #fefcf8;
 		box-shadow: 0 0.8rem 2rem rgba(40, 25, 10, 0.28);
@@ -315,6 +412,24 @@ const {
 			background-color 250ms ease,
 			border-color 250ms ease,
 			transform 250ms ease;
+	}
+
+	.open-invitation::after {
+		position: absolute;
+		top: -75%;
+		left: -35%;
+		width: 20%;
+		height: 250%;
+		content: '';
+		background: rgba(254, 252, 248, 0.3);
+		filter: blur(3px);
+		transform: rotate(18deg);
+		animation: button-shine 3s ease-in-out infinite;
+	}
+
+	.open-invitation > span {
+		position: relative;
+		z-index: 1;
 	}
 
 	.open-invitation:hover {
@@ -361,6 +476,69 @@ const {
 		}
 	}
 
+	@keyframes glass-shine {
+		0%, 12% {
+			left: -75%;
+			opacity: 0;
+		}
+
+		18% {
+			opacity: 0.8;
+		}
+
+		42%, 100% {
+			left: 145%;
+			opacity: 0;
+		}
+	}
+
+	@keyframes button-shine {
+		0%, 24% {
+			left: -35%;
+			opacity: 0;
+		}
+
+		32% {
+			opacity: 0.7;
+		}
+
+		52%, 100% {
+			left: 125%;
+			opacity: 0;
+		}
+	}
+
+	@keyframes frame-glow {
+		0%, 100% {
+			border-color: rgba(254, 252, 248, 0.64);
+		}
+
+		50% {
+			border-color: rgba(222, 199, 173, 0.96);
+			box-shadow:
+				inset 0 0 0 1px rgba(254, 252, 248, 0.08),
+				0 0 1.5rem rgba(222, 199, 173, 0.18);
+		}
+	}
+
+	@keyframes ornament-glow {
+		50% {
+			filter: drop-shadow(0 0 0.9rem rgba(222, 199, 173, 0.58));
+		}
+	}
+
+	@keyframes photo-breathe {
+		to {
+			transform: scale(1.055);
+		}
+	}
+
+	@keyframes aura-float {
+		to {
+			transform: translate3d(-1.2rem, 1.4rem, 0) scale(1.08);
+		}
+	}
+
 	@media (min-width: 768px) {
 		.welcome-screen__photo {
 			object-position: center 42%;
@@ -384,6 +562,7 @@ const {
 		.welcome-screen__content {
 			bottom: 0.8rem;
 			width: min(84vw, 27rem);
+			padding: 0.75rem 0.8rem;
 		}
 
 		.botanical-ornament {
@@ -406,7 +585,13 @@ const {
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.welcome-screen__content {
+		.welcome-screen__content,
+		.welcome-screen__content::after,
+		.welcome-screen__photo,
+		.welcome-screen__aura,
+		.botanical-ornament,
+		.couple-card,
+		.open-invitation::after {
 			animation: none;
 		}
 
