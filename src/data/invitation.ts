@@ -1,92 +1,248 @@
 export const invitation = {
 	pareja: {
-		novia: 'Andrea',
-		novio: 'Carlos',
+		novia: 'Nayzeth',
+		novio: 'Adán',
 	},
 
 	evento: {
 		titulo: 'Boda civil',
-		fechaCorta: '31.12.2027',
-		fechaLarga: '31 de diciembre de 2027',
-		inicio: '2027-12-31T17:00:00-06:00',
-		fin: '2028-01-01T01:00:00-06:00',
-		horaCeremonia: '5:00 p. m.',
-		horaRecepcion: '6:00 p. m.',
-		salon: 'Nombre del salón',
-		direccion: 'Calle y número, Ciudad, Estado',
-		mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Nombre+del+salon',
-		wazeUrl: 'https://www.waze.com/ul?q=Nombre%20del%20salon&navigate=yes',
+
+		fechaCorta: '05.02.2027',
+
+		fechaLarga: '5 de febrero de 2027',
+
+		/*
+		 * La fecha ya es la correcta.
+		 * La hora queda provisional hasta que tengamos
+		 * el horario real de la ceremonia.
+		 */
+		inicio: '2027-02-05T17:00:00-06:00',
+
+		fin: '2027-02-06T01:00:00-06:00',
+
+		/*
+		 * PENDIENTE:
+		 * Reemplazar cuando tengamos los horarios reales.
+		 */
+		horaCeremonia: 'Horario por confirmar',
+
+		horaRecepcion: 'Horario por confirmar',
+
+		salon: 'Salón Los Pavorreales',
+
+		direccion:
+			'Fernando Montes de Oca S/N, Col. Niños Héroes',
+
+		/*
+		 * PENDIENTE:
+		 * Colocar las URLs exactas de Google Maps y Waze
+		 * cuando confirmemos la ubicación.
+		 */
+		mapsUrl:
+			'https://www.google.com/maps/search/?api=1&query=Salon+Los+Pavorreales+Fernando+Montes+de+Oca',
+
+		wazeUrl:
+			'https://www.waze.com/ul?q=Salon%20Los%20Pavorreales&navigate=yes',
 	},
 
 	textos: {
 		invitacion:
-			'Con inmensa alegría queremos invitarte a compartir con nosotros el comienzo de esta nueva etapa de nuestras vidas.',
+			'Sería un honor que las personas más importantes de nuestras vidas nos acompañen en la primera parte de nuestra unión.',
+
 		mensaje:
-			'Después de tantos momentos compartidos, hemos decidido unir nuestras vidas. Nos hará muy felices celebrar este día rodeados de las personas que forman parte de nuestra historia.',
+			'Porque no es la suerte de haber encontrado a alguien perfecto, sino el construir un amor imperfecto de manera perfecta. Sería un honor que las personas más importantes de nuestras vidas nos acompañen en la primera parte de nuestra unión.',
+
 		cierre:
-			'Gracias por acompañarnos en el comienzo de nuestro para siempre.',
+			'Gracias por acompañarnos en la primera parte de nuestra unión y por ser parte de este momento tan especial.',
 	},
 
 	imagenes: {
-		portada: '/images/welcome-couple.webp',
+		portada:
+			'/images/welcome-couple.webp',
+
+		tematica:
+			'/images/tematica.png',
+
+		salon:
+			'/images/salon.png',
+
 		galeria: [
 			{
-				src: '/images/welcome-couple.webp',
-				alt: 'Los novios compartiendo un momento especial',
-				posicion: 'center 18%',
+				src:
+					'/images/welcome-couple.webp',
+
+				alt:
+					'Nayzeth Gutiérrez y Adán Pérez compartiendo un momento especial',
+
+				posicion:
+					'center 18%',
 			},
+
 			{
-				src: '/images/welcome-couple.webp',
-				alt: 'Retrato de los novios',
-				posicion: '35% center',
+				src:
+					'/images/welcome-couple.webp',
+
+				alt:
+					'Retrato de Nayzeth y Adán Omar',
+
+				posicion:
+					'35% center',
 			},
+
 			{
-				src: '/images/welcome-couple.webp',
-				alt: 'Historia de amor de los novios',
-				posicion: '70% center',
+				src:
+					'/images/welcome-couple.webp',
+
+				alt:
+					'Historia de amor de Nayzeth y Adán Omar',
+
+				posicion:
+					'70% center',
 			},
 		],
 	},
 
+	/*
+	 * PENDIENTE:
+	 * Necesitamos los horarios reales para modificar
+	 * correctamente el itinerario.
+	 */
 	itinerario: [
-		{ hora: '4:30 p. m.', titulo: 'Recepción', detalle: 'Bienvenida de nuestros invitados' },
-		{ hora: '5:00 p. m.', titulo: 'Ceremonia civil', detalle: 'El momento del sí, acepto' },
-		{ hora: '6:00 p. m.', titulo: 'Cena', detalle: 'Compartiremos la mesa y brindaremos' },
-		{ hora: '8:00 p. m.', titulo: 'Celebración', detalle: 'Música, baile y buenos momentos' },
+		{
+			hora:
+				'Por confirmar',
+
+			titulo:
+				'Recepción',
+
+			detalle:
+				'Bienvenida de nuestros invitados',
+		},
+
+		{
+			hora:
+				'Por confirmar',
+
+			titulo:
+				'Ceremonia civil',
+
+			detalle:
+				'El momento del sí, acepto',
+		},
+
+		{
+			hora:
+				'Por confirmar',
+
+			titulo:
+				'Cena',
+
+			detalle:
+				'Compartiremos la mesa y brindaremos',
+		},
+
+		{
+			hora:
+				'Por confirmar',
+
+			titulo:
+				'Celebración',
+
+			detalle:
+				'Música, baile y buenos momentos',
+		},
 	],
 
 	vestimenta: {
-		codigo: 'Formal · tonos naturales',
+		codigo:
+			'Semiformal',
+
 		descripcion:
-			'Queremos verte elegante y cómodo. Te sugerimos tonos tierra, olivo, arena, champagne o café.',
-		reservados: 'El blanco y el marfil están reservados para los novios.',
+			'Código de vestimenta semiformal para acompañarnos en este día tan especial.',
+
+		/*
+		 * No me proporcionaste colores reservados,
+		 * así que no agregamos una regla inventada.
+		 */
+		reservados:
+			'',
 	},
 
 	regalos: {
-		titulo: 'Mesa de regalos',
+		titulo:
+			'Mesa de regalos',
+
 		mensaje:
 			'Tu presencia es nuestro mejor regalo. Si deseas tener un detalle con nosotros, puedes hacerlo mediante nuestra mesa de regalos o sobre de buenos deseos.',
-		tienda: 'Nombre de la tienda',
-		numeroEvento: '000000',
-		url: '#',
+
+		/*
+		 * PENDIENTE:
+		 * Información de mesa de regalos.
+		 */
+		tienda:
+			'Por confirmar',
+
+		numeroEvento:
+			'Por confirmar',
+
+		url:
+			'#',
 	},
 
 	rsvp: {
-		fechaLimite: '1 de diciembre de 2027',
-		whatsapp: '5210000000000',
-		maxAcompanantes: 2,
+		/*
+		 * PENDIENTE:
+		 * Fecha límite real para confirmar.
+		 */
+		fechaLimite:
+			'Por confirmar',
+
+		/*
+		 * PENDIENTE:
+		 * WhatsApp real de confirmación.
+		 */
+		whatsapp:
+			'5210000000000',
+
+		maxAcompanantes:
+			2,
 	},
 
 	avisos: [
-		{ titulo: 'Solo adultos', texto: 'Deseamos que disfrutes una noche pensada especialmente para adultos.' },
-		{ titulo: 'Puntualidad', texto: 'Te recomendamos llegar 30 minutos antes del inicio de la ceremonia.' },
-		{ titulo: 'Estacionamiento', texto: 'El salón contará con estacionamiento para nuestros invitados.' },
+		{
+			titulo:
+				'Puntualidad',
+
+			texto:
+				'Te recomendamos llegar con anticipación para acompañarnos desde el inicio de nuestra celebración.',
+		},
+
+		{
+			titulo:
+				'Vestimenta',
+
+			texto:
+				'El código de vestimenta para nuestra celebración será semiformal.',
+		},
+
+		{
+			titulo:
+				'Ubicación',
+
+			texto:
+				'La celebración se llevará a cabo en Salón Los Pavorreales, Fernando Montes de Oca S/N, Col. Niños Héroes.',
+		},
 	],
 
 	musica: {
-		src: '/audio/musica-boda-provisional.mp3',
-		titulo: 'Instrumental de bienvenida',
+		src:
+			'/audio/musica-boda-provisional.mp3',
+
+		titulo:
+			'Instrumental de bienvenida',
 	},
 } as const;
 
-export type Invitation = typeof invitation;
+
+export type Invitation =
+	typeof invitation;

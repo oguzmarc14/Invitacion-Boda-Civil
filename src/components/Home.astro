@@ -1,1440 +1,2065 @@
 ---
 interface Props {
-  novia: string;
-  novio: string;
-  fecha: string;
-  fechaObjetivo: string;
-  titulo: string;
-  mensajeInvitacion: string;
-  imagen: string;
+	novia: string;
+	novio: string;
+	fecha: string;
+	fechaObjetivo: string;
+	titulo: string;
+	mensajeInvitacion: string;
+	imagen: string;
 }
 
 const {
-  novia,
-  novio,
-  fecha,
-  fechaObjetivo,
-  titulo,
-  mensajeInvitacion,
-  imagen,
+	novia,
+	novio,
+	fecha,
+	fechaObjetivo,
+	titulo,
+	mensajeInvitacion,
+	imagen,
 } = Astro.props;
 ---
 
 <section
-  class="home"
-  data-invitation-content
-  data-home-countdown
-  data-event-date={fechaObjetivo}
-  aria-labelledby="home-title"
+	class="home"
+	data-invitation-content
+	data-home-countdown
+	data-event-date={fechaObjetivo}
+	aria-labelledby="home-title"
 >
-  <img
-    class="home__background"
-    src={imagen}
-    alt={`Fotografía de ${novia} y ${novio}`}
-    loading="eager"
-    fetchpriority="high"
-  />
+	<img
+		class="home__background"
+		src={imagen}
+		alt={`Fotografía de ${novia} y ${novio}`}
+		loading="eager"
+		fetchpriority="high"
+	/>
 
-  <div class="home__overlay" aria-hidden="true"></div>
-  <div class="home__vignette" aria-hidden="true"></div>
+	<div
+		class="home__overlay"
+		aria-hidden="true"
+	></div>
 
-  <div class="home__content">
-    <p class="home__title" id="home-title">
-      {titulo}
-    </p>
+	<div
+		class="home__grain"
+		aria-hidden="true"
+	></div>
 
-    <h1 class="home__names">
-      <span>{novia}</span>
+	<div class="home__content">
 
-      <small>&amp;</small>
+		<!-- =========================
+			TÍTULO
+		========================= -->
 
-      <span>{novio}</span>
-    </h1>
+		<div class="home__intro">
+			<span class="home__intro-line"></span>
 
-    <div class="home__date-block">
-      <span class="home__date-line"></span>
+			<p
+				class="home__title"
+				id="home-title"
+			>
+				{titulo}
+			</p>
 
-      <div>
-        <time datetime={fechaObjetivo}>
-          {fecha}
-        </time>
+			<span class="home__intro-line"></span>
+		</div>
 
-        <small>Boda civil</small>
-      </div>
 
-      <span class="home__date-line"></span>
-    </div>
+		<!-- =========================
+			NOMBRES
+		========================= -->
 
-    <p class="home__faltan">
-      Faltan
-    </p>
+		<h1 class="home__names">
+			<span>{novia}</span>
 
-    <div
-      class="home__countdown"
-      aria-label="Cuenta regresiva para la boda"
-    >
-      <div class="home__countdown-item">
-        <strong data-home-days>
-          000
-        </strong>
+			<small>&amp;</small>
 
-        <span>Día</span>
-      </div>
+			<span>{novio}</span>
+		</h1>
 
-      <div class="home__countdown-item">
-        <strong data-home-hours>
-          00
-        </strong>
 
-        <span>Hora</span>
-      </div>
+		<!-- =========================
+			FECHA
+		========================= -->
 
-      <div class="home__countdown-item">
-        <strong data-home-minutes>
-          00
-        </strong>
+		<div class="home__date">
+			<span class="home__date-decoration">
+				✦
+			</span>
 
-        <span>Minuto</span>
-      </div>
+			<div>
+				<time datetime={fechaObjetivo}>
+					{fecha}
+				</time>
 
-      <div class="home__countdown-item">
-        <strong data-home-seconds>
-          00
-        </strong>
+				<small>
+					Boda civil
+				</small>
+			</div>
 
-        <span>Segundo</span>
-      </div>
-    </div>
+			<span class="home__date-decoration">
+				✦
+			</span>
+		</div>
 
-    <p class="home__message">
-      {mensajeInvitacion}
-    </p>
 
-    <a
-      class="home__continue"
-      href="#historia"
-    >
-      <span>Desliza para continuar</span>
+		<!-- =========================
+			CONTADOR
+		========================= -->
 
-      <svg
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
-        <path d="M6 9l6 6 6-6"></path>
-      </svg>
-    </a>
-  </div>
+		<div class="home__countdown-area">
+
+			<p class="home__faltan">
+				Faltan
+			</p>
+
+			<div
+				class="home__countdown"
+				aria-label="Cuenta regresiva para la boda"
+			>
+
+				<div
+					class="
+						home__countdown-item
+						home__countdown-item--champagne
+					"
+				>
+					<strong data-home-days>
+						000
+					</strong>
+
+					<span>
+						Días
+					</span>
+				</div>
+
+				<div
+					class="
+						home__countdown-item
+						home__countdown-item--honey
+					"
+				>
+					<strong data-home-hours>
+						00
+					</strong>
+
+					<span>
+						Horas
+					</span>
+				</div>
+
+				<div
+					class="
+						home__countdown-item
+						home__countdown-item--olive
+					"
+				>
+					<strong data-home-minutes>
+						00
+					</strong>
+
+					<span>
+						Minutos
+					</span>
+				</div>
+
+				<div
+					class="
+						home__countdown-item
+						home__countdown-item--brown
+					"
+				>
+					<strong data-home-seconds>
+						00
+					</strong>
+
+					<span>
+						Segundos
+					</span>
+				</div>
+
+			</div>
+		</div>
+
+
+		<!-- =========================
+			MENSAJE
+		========================= -->
+
+		<div class="home__message-area">
+			<span aria-hidden="true">
+				“
+			</span>
+
+			<p class="home__message">
+				{mensajeInvitacion}
+			</p>
+		</div>
+
+
+		<!-- =========================
+			CONTINUAR
+		========================= -->
+
+		<a
+			class="home__continue"
+			href="#historia"
+		>
+			<span>
+				Desliza para continuar
+			</span>
+
+			<svg
+				viewBox="0 0 24 24"
+				aria-hidden="true"
+			>
+				<path d="M6 9l6 6 6-6"></path>
+			</svg>
+		</a>
+
+	</div>
 </section>
 
+
 <script>
-  const home = document.querySelector<HTMLElement>(
-    "[data-invitation-content]"
-  );
+	const home =
+		document.querySelector<HTMLElement>(
+			"[data-invitation-content]"
+		);
 
-  window.addEventListener("invitation:open", () => {
-    if (!home) return;
+	window.addEventListener(
+		"invitation:open",
+		() => {
+			if (!home) return;
 
-    window.setTimeout(() => {
-      home.classList.add("is-visible");
-      home.classList.add("is-open");
-    }, 180);
-  });
+			window.setTimeout(
+				() => {
+					home.classList.add(
+						"is-visible"
+					);
 
-  const countdown = document.querySelector<HTMLElement>(
-    "[data-home-countdown]"
-  );
+					home.classList.add(
+						"is-open"
+					);
+				},
+				180
+			);
+		}
+	);
 
-  const eventDate = countdown?.dataset.eventDate;
 
-  const targetDate = eventDate
-    ? new Date(eventDate).getTime()
-    : Date.now();
+	const countdown =
+		document.querySelector<HTMLElement>(
+			"[data-home-countdown]"
+		);
 
-  const twoDigits = (value: number) =>
-    String(value).padStart(2, "0");
+	const eventDate =
+		countdown?.dataset.eventDate;
 
-  const updateCountdown = () => {
-    const remaining = Math.max(
-      0,
-      targetDate - Date.now()
-    );
+	const targetDate =
+		eventDate
+			? new Date(
+					eventDate
+				).getTime()
+			: Date.now();
 
-    const days = Math.floor(
-      remaining / 86_400_000
-    );
+	const twoDigits =
+		(value: number) =>
+			String(
+				value
+			).padStart(
+				2,
+				"0"
+			);
 
-    const hours = Math.floor(
-      (remaining / 3_600_000) % 24
-    );
 
-    const minutes = Math.floor(
-      (remaining / 60_000) % 60
-    );
+	const updateCountdown = () => {
+		const remaining =
+			Math.max(
+				0,
+				targetDate -
+					Date.now()
+			);
 
-    const seconds = Math.floor(
-      (remaining / 1_000) % 60
-    );
+		const days =
+			Math.floor(
+				remaining /
+					86_400_000
+			);
 
-    const values = {
-      "[data-home-days]": String(days),
-      "[data-home-hours]": twoDigits(hours),
-      "[data-home-minutes]": twoDigits(minutes),
-      "[data-home-seconds]": twoDigits(seconds),
-    };
+		const hours =
+			Math.floor(
+				(
+					remaining /
+					3_600_000
+				) % 24
+			);
 
-    Object.entries(values).forEach(
-      ([selector, value]) => {
-        const element =
-          countdown?.querySelector<HTMLElement>(
-            selector
-          );
+		const minutes =
+			Math.floor(
+				(
+					remaining /
+					60_000
+				) % 60
+			);
 
-        if (element) {
-          element.textContent = value;
-        }
-      }
-    );
-  };
+		const seconds =
+			Math.floor(
+				(
+					remaining /
+					1_000
+				) % 60
+			);
 
-  updateCountdown();
 
-  const countdownInterval =
-    window.setInterval(
-      updateCountdown,
-      1000
-    );
+		const values = {
+			"[data-home-days]":
+				String(days),
 
-  document.addEventListener(
-    "astro:before-swap",
-    () => {
-      window.clearInterval(
-        countdownInterval
-      );
-    },
-    {
-      once: true,
-    }
-  );
+			"[data-home-hours]":
+				twoDigits(hours),
+
+			"[data-home-minutes]":
+				twoDigits(minutes),
+
+			"[data-home-seconds]":
+				twoDigits(seconds),
+		};
+
+
+		Object
+			.entries(values)
+			.forEach(
+				([
+					selector,
+					value
+				]) => {
+
+					const element =
+						countdown
+							?.querySelector<HTMLElement>(
+								selector
+							);
+
+					if (element) {
+						element.textContent =
+							value;
+					}
+				}
+			);
+	};
+
+
+	updateCountdown();
+
+
+	const countdownInterval =
+		window.setInterval(
+			updateCountdown,
+			1000
+		);
+
+
+	document.addEventListener(
+		"astro:before-swap",
+
+		() => {
+			window.clearInterval(
+				countdownInterval
+			);
+		},
+
+		{
+			once: true,
+		}
+	);
 </script>
 
+
 <style>
-  .home {
-    --warm-white: #fefcf8;
-    --ivory: #ece4d9;
-    --champagne: #dec7ad;
-    --bronze: #c69c70;
-    --gold: #a57a4f;
-    --olive: #6d6853;
-    --brown: #704c32;
-    --espresso: #28190a;
-
-    position: relative;
-
-    width: 100%;
-    min-height: 100svh;
-
-    overflow: hidden;
 
-    display: grid;
-    place-items: center;
+	/* =====================================================
+	   PALETA
+	===================================================== */
 
-    background: var(--espresso);
-
-    color: var(--warm-white);
-
-    opacity: 0;
-
-    transform: scale(1.025);
-
-    transition:
-      opacity 900ms ease,
-      transform 1400ms cubic-bezier(
-        0.22,
-        1,
-        0.36,
-        1
-      );
-  }
-
-  .home.is-visible {
-    opacity: 1;
+	.home {
+		--warm-white: #fefcf8;
+		--ivory: #ece4d9;
+		--champagne: #dec7ad;
+		--sand: #c69c70;
+		--honey: #a57a4f;
+		--brown: #704c32;
+		--olive: #6d6853;
+		--espresso: #28190a;
 
-    transform: scale(1);
-  }
+		position: relative;
 
-  /* =====================================================
-     FONDO
-  ===================================================== */
+		width: 100%;
+		min-height: 100svh;
 
-  .home__background {
-    position: absolute;
+		overflow: hidden;
 
-    inset: 0;
+		display: grid;
+		place-items: center;
 
-    width: 100%;
-    height: 100%;
-
-    display: block;
-
-    object-fit: cover;
-
-    object-position: center 42%;
-
-    filter:
-      saturate(0.78)
-      contrast(0.94)
-      brightness(0.78);
-
-    transform: scale(1.14);
-
-    transition:
-      transform 5s
-        cubic-bezier(
-          0.16,
-          1,
-          0.3,
-          1
-        ),
-      filter 2s ease;
-  }
-
-  .home.is-open .home__background {
-    transform: scale(1.02);
-
-    filter:
-      saturate(0.84)
-      contrast(0.95)
-      brightness(0.88);
-  }
-
-  .home__overlay {
-    position: absolute;
-
-    inset: 0;
-
-    background:
-      linear-gradient(
-        180deg,
-        rgba(40, 25, 10, 0.24) 0%,
-        rgba(40, 25, 10, 0.06) 22%,
-        rgba(109, 104, 83, 0.08) 46%,
-        rgba(112, 76, 50, 0.18) 68%,
-        rgba(40, 25, 10, 0.68) 100%
-      ),
-      linear-gradient(
-        90deg,
-        rgba(109, 104, 83, 0.1),
-        transparent 50%,
-        rgba(112, 76, 50, 0.08)
-      );
-
-    pointer-events: none;
-  }
-
-  .home__vignette {
-    position: absolute;
-
-    inset: 0;
-
-    background:
-      radial-gradient(
-        ellipse at center,
-        transparent 34%,
-        rgba(40, 25, 10, 0.08) 65%,
-        rgba(40, 25, 10, 0.42) 100%
-      );
-
-    pointer-events: none;
-  }
-
-  /* =====================================================
-     CONTENIDO
-  ===================================================== */
-
-  .home__content {
-    position: relative;
-
-    z-index: 2;
-
-    width: min(
-      100%,
-      32rem
-    );
-
-    min-height: 100svh;
-
-    margin: 0 auto;
-
-    padding:
-      max(
-        6.5rem,
-        calc(
-          env(
-            safe-area-inset-top
-          )
-          +
-          5rem
-        )
-      )
-      1.2rem
-      max(
-        1rem,
-        env(
-          safe-area-inset-bottom
-        )
-      );
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    text-align: center;
-  }
-
-  /* =====================================================
-     ESTADO INICIAL DE ELEMENTOS
-  ===================================================== */
-
-  .home__title,
-  .home__names,
-  .home__date-block,
-  .home__faltan,
-  .home__countdown,
-  .home__message,
-  .home__continue {
-    opacity: 0;
-  }
-
-  /* =====================================================
-     TÍTULO
-  ===================================================== */
-
-  .home__title {
-    margin: 0;
-
-    color: var(--warm-white);
-
-    font-family:
-      Georgia,
-      "Times New Roman",
-      serif;
-
-    font-size:
-      clamp(
-        0.8rem,
-        3.6vw,
-        1.05rem
-      );
-
-    font-weight: 400;
-
-    letter-spacing: 0.5em;
-
-    line-height: 1;
-
-    text-transform: uppercase;
-
-    text-shadow:
-      0
-      2px
-      12px
-      rgba(
-        40,
-        25,
-        10,
-        0.55
-      );
-  }
-
-  .home.is-open .home__title {
-    animation:
-      home-title-reveal
-      900ms
-      350ms
-      cubic-bezier(
-        0.22,
-        1,
-        0.36,
-        1
-      )
-      both;
-  }
-
-  /* =====================================================
-     NOMBRES
-  ===================================================== */
-
-  .home__names {
-    width: 100%;
-
-    margin:
-      clamp(
-        2.5rem,
-        6vh,
-        4rem
-      )
-      0
-      0;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    color: var(--warm-white);
-
-    font-family:
-      "Parisienne",
-      cursive;
-
-    font-size:
-      clamp(
-        5.4rem,
-        22vw,
-        8.8rem
-      );
-
-    font-weight: 400;
-
-    line-height: 0.64;
-
-    text-shadow:
-      0
-      3px
-      6px
-      rgba(
-        40,
-        25,
-        10,
-        0.25
-      ),
-      0
-      0.8rem
-      1.8rem
-      rgba(
-        40,
-        25,
-        10,
-        0.24
-      );
-  }
-
-  .home.is-open .home__names {
-    animation:
-      home-names-reveal
-      1400ms
-      550ms
-      cubic-bezier(
-        0.16,
-        1,
-        0.3,
-        1
-      )
-      both;
-  }
-
-  .home__names span {
-    display: block;
-
-    white-space: nowrap;
-  }
-
-  .home__names small {
-    margin:
-      clamp(
-        0.85rem,
-        2vh,
-        1.2rem
-      )
-      0;
-
-    color: var(--ivory);
-
-    font-family:
-      "Parisienne",
-      cursive;
-
-    font-size: 0.42em;
-
-    font-weight: 400;
-
-    line-height: 1;
-  }
-
-  /* =====================================================
-     FECHA
-  ===================================================== */
-
-  .home__date-block {
-    width: min(
-      92%,
-      24rem
-    );
-
-    margin-top:
-      clamp(
-        2rem,
-        5vh,
-        3.2rem
-      );
-
-    display: grid;
-
-    grid-template-columns:
-      1fr
-      auto
-      1fr;
-
-    align-items: center;
-
-    gap: 0.8rem;
-  }
-
-  .home.is-open .home__date-block {
-    animation:
-      home-reveal
-      1000ms
-      1050ms
-      cubic-bezier(
-        0.22,
-        1,
-        0.36,
-        1
-      )
-      both;
-  }
-
-  .home__date-line {
-    width: 100%;
-
-    height: 1px;
-
-    background:
-      linear-gradient(
-        90deg,
-        transparent,
-        rgba(
-          222,
-          199,
-          173,
-          0.8
-        )
-      );
-  }
-
-  .home__date-line:last-child {
-    background:
-      linear-gradient(
-        90deg,
-        rgba(
-          222,
-          199,
-          173,
-          0.8
-        ),
-        transparent
-      );
-  }
-
-  .home__date-block > div {
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-  }
-
-  .home__date-block time {
-    color: var(--warm-white);
-
-    font-family:
-      Georgia,
-      "Times New Roman",
-      serif;
-
-    font-size:
-      clamp(
-        1rem,
-        4.8vw,
-        1.5rem
-      );
-
-    font-weight: 400;
-
-    letter-spacing: 0.1em;
-
-    line-height: 1.1;
-
-    white-space: nowrap;
-
-    text-transform: uppercase;
-
-    text-shadow:
-      0
-      2px
-      10px
-      rgba(
-        40,
-        25,
-        10,
-        0.5
-      );
-  }
-
-  .home__date-block small {
-    margin-top: 0.5rem;
-
-    color:
-      rgba(
-        254,
-        252,
-        248,
-        0.86
-      );
-
-    font-family:
-      Georgia,
-      "Times New Roman",
-      serif;
-
-    font-size: 0.55rem;
-
-    font-weight: 400;
-
-    letter-spacing: 0.35em;
-
-    text-transform: uppercase;
-  }
-
-  /* =====================================================
-     FALTAN
-  ===================================================== */
-
-  .home__faltan {
-    margin:
-      auto
-      0
-      1rem;
-
-    color: var(--warm-white);
-
-    font-family:
-      "Parisienne",
-      cursive;
-
-    font-size:
-      clamp(
-        3.3rem,
-        14vw,
-        5rem
-      );
-
-    font-weight: 400;
-
-    line-height: 0.9;
-
-    text-shadow:
-      0
-      3px
-      10px
-      rgba(
-        40,
-        25,
-        10,
-        0.48
-      );
-  }
-
-  .home.is-open .home__faltan {
-    animation:
-      home-faltan-reveal
-      1100ms
-      1300ms
-      cubic-bezier(
-        0.22,
-        1,
-        0.36,
-        1
-      )
-      both;
-  }
-
-  /* =====================================================
-     CONTADOR
-  ===================================================== */
-
-  .home__countdown {
-    width: min(
-      100%,
-      30rem
-    );
-
-    display: grid;
-
-    grid-template-columns:
-      repeat(
-        4,
-        minmax(
-          0,
-          1fr
-        )
-      );
-
-    gap:
-      clamp(
-        0.42rem,
-        2.2vw,
-        0.75rem
-      );
-  }
-
-  .home.is-open .home__countdown {
-    animation:
-      home-reveal
-      700ms
-      1400ms
-      ease
-      both;
-  }
-
-  .home__countdown-item {
-    position: relative;
-
-    min-width: 0;
-
-    aspect-ratio:
-      1 / 1;
-
-    overflow: hidden;
-
-    border:
-      1px
-      solid
-      rgba(
-        222,
-        199,
-        173,
-        0.58
-      );
-
-    border-radius: 50%;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background:
-      linear-gradient(
-        145deg,
-        rgba(
-          254,
-          252,
-          248,
-          0.3
-        ),
-        rgba(
-          236,
-          228,
-          217,
-          0.1
-        )
-      );
-
-    box-shadow:
-      0
-      0.8rem
-      2rem
-      rgba(
-        40,
-        25,
-        10,
-        0.2
-      ),
-      inset
-      0
-      1px
-      0
-      rgba(
-        255,
-        255,
-        255,
-        0.42
-      ),
-      inset
-      0
-      -1px
-      0
-      rgba(
-        40,
-        25,
-        10,
-        0.08
-      );
-
-    -webkit-backdrop-filter:
-      blur(15px)
-      saturate(135%);
-
-    backdrop-filter:
-      blur(15px)
-      saturate(135%);
-
-    opacity: 0;
-
-    transform:
-      translateY(1.4rem)
-      scale(0.8);
-  }
-
-  .home.is-open .home__countdown-item {
-    animation:
-      home-countdown-pop
-      750ms
-      cubic-bezier(
-        0.34,
-        1.56,
-        0.64,
-        1
-      )
-      both;
-  }
-
-  .home.is-open
-    .home__countdown-item:nth-child(1) {
-    animation-delay: 1.5s;
-  }
-
-  .home.is-open
-    .home__countdown-item:nth-child(2) {
-    animation-delay: 1.64s;
-  }
-
-  .home.is-open
-    .home__countdown-item:nth-child(3) {
-    animation-delay: 1.78s;
-  }
-
-  .home.is-open
-    .home__countdown-item:nth-child(4) {
-    animation-delay: 1.92s;
-  }
-
-  .home__countdown-item::before {
-    position: absolute;
-
-    top: 3%;
-
-    left: 14%;
-
-    width: 72%;
-
-    height: 48%;
-
-    border-radius: 50%;
-
-    content: "";
-
-    background:
-      radial-gradient(
-        ellipse,
-        rgba(
-          255,
-          255,
-          255,
-          0.26
-        ),
-        transparent 72%
-      );
-
-    pointer-events: none;
-  }
-
-  .home__countdown-item strong {
-    position: relative;
-
-    z-index: 2;
-
-    color: var(--warm-white);
-
-    font-family:
-      Georgia,
-      "Times New Roman",
-      serif;
-
-    font-size:
-      clamp(
-        1.5rem,
-        7vw,
-        2.3rem
-      );
-
-    font-weight: 400;
-
-    line-height: 1;
-
-    font-variant-numeric:
-      tabular-nums;
-
-    text-shadow:
-      0
-      2px
-      8px
-      rgba(
-        40,
-        25,
-        10,
-        0.4
-      );
-  }
-
-  .home__countdown-item span {
-    position: relative;
-
-    z-index: 2;
-
-    margin-top: 0.42rem;
-
-    color:
-      rgba(
-        254,
-        252,
-        248,
-        0.96
-      );
-
-    font-family:
-      Georgia,
-      "Times New Roman",
-      serif;
-
-    font-size:
-      clamp(
-        0.4rem,
-        1.7vw,
-        0.56rem
-      );
-
-    letter-spacing: 0.08em;
-
-    text-transform: uppercase;
-
-    text-shadow:
-      0
-      1px
-      4px
-      rgba(
-        40,
-        25,
-        10,
-        0.3
-      );
-  }
-
-  /* =====================================================
-     MENSAJE
-  ===================================================== */
-
-  .home__message {
-    width: min(
-      90%,
-      25rem
-    );
-
-    margin:
-      1.1rem
-      auto
-      0;
-
-    color:
-      rgba(
-        254,
-        252,
-        248,
-        0.78
-      );
-
-    font-family:
-      Georgia,
-      "Times New Roman",
-      serif;
-
-    font-size:
-      clamp(
-        0.7rem,
-        2.8vw,
-        0.88rem
-      );
-
-    font-style: italic;
-
-    line-height: 1.6;
-
-    text-shadow:
-      0
-      1px
-      5px
-      rgba(
-        40,
-        25,
-        10,
-        0.4
-      );
-  }
-
-  .home.is-open .home__message {
-    animation:
-      home-reveal
-      900ms
-      2050ms
-      ease
-      both;
-  }
-
-  /* =====================================================
-     DESLIZA
-  ===================================================== */
-
-  .home__continue {
-    margin-top:
-      clamp(
-        0.8rem,
-        2vh,
-        1.2rem
-      );
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 0.2rem;
-
-    color:
-      rgba(
-        254,
-        252,
-        248,
-        0.7
-      );
-
-    font-family:
-      Arial,
-      Helvetica,
-      sans-serif;
-
-    font-size: 0.45rem;
-
-    letter-spacing: 0.18em;
-
-    text-decoration: none;
-
-    text-transform: uppercase;
-  }
-
-  .home.is-open .home__continue {
-    animation:
-      home-reveal
-      900ms
-      2250ms
-      ease
-      both;
-  }
-
-  .home__continue svg {
-    width: 1.15rem;
-
-    fill: none;
-
-    stroke: var(--champagne);
-
-    stroke-width: 1.5;
-
-    stroke-linecap: round;
-
-    stroke-linejoin: round;
-
-    animation:
-      home-arrow
-      1.7s
-      ease-in-out
-      infinite;
-  }
-
-  /* =====================================================
-     ANIMACIONES
-  ===================================================== */
-
-  @keyframes home-reveal {
-    from {
-      opacity: 0;
-
-      transform:
-        translateY(1.5rem);
-    }
-
-    to {
-      opacity: 1;
-
-      transform:
-        translateY(0);
-    }
-  }
-
-  @keyframes home-title-reveal {
-    from {
-      opacity: 0;
-
-      transform:
-        translateY(-0.7rem);
-
-      letter-spacing:
-        0.8em;
-    }
-
-    to {
-      opacity: 1;
-
-      transform:
-        translateY(0);
-
-      letter-spacing:
-        0.5em;
-    }
-  }
-
-  @keyframes home-names-reveal {
-    from {
-      opacity: 0;
-
-      transform:
-        translateY(2rem)
-        scale(0.93);
-
-      filter:
-        blur(8px);
-    }
-
-    to {
-      opacity: 1;
-
-      transform:
-        translateY(0)
-        scale(1);
-
-      filter:
-        blur(0);
-    }
-  }
-
-  @keyframes home-faltan-reveal {
-    from {
-      opacity: 0;
-
-      transform:
-        translateY(1rem)
-        scale(0.9);
-    }
-
-    to {
-      opacity: 1;
-
-      transform:
-        translateY(0)
-        scale(1);
-    }
-  }
-
-  @keyframes home-countdown-pop {
-    from {
-      opacity: 0;
-
-      transform:
-        translateY(1.4rem)
-        scale(0.8);
-    }
-
-    to {
-      opacity: 1;
-
-      transform:
-        translateY(0)
-        scale(1);
-    }
-  }
-
-  @keyframes home-arrow {
-    0%,
-    100% {
-      transform:
-        translateY(0);
-
-      opacity: 0.45;
-    }
-
-    50% {
-      transform:
-        translateY(0.35rem);
-
-      opacity: 1;
-    }
-  }
-
-  /* =====================================================
-     TELÉFONOS PEQUEÑOS
-  ===================================================== */
-
-  @media (max-width: 380px) {
-    .home__content {
-      padding-inline: 0.85rem;
-    }
-
-    .home__names {
-      font-size:
-        clamp(
-          4.5rem,
-          21vw,
-          6.5rem
-        );
-    }
-
-    .home__countdown {
-      gap: 0.3rem;
-    }
-  }
-
-  /* =====================================================
-     POCA ALTURA
-  ===================================================== */
-
-  @media (max-height: 740px) {
-    .home__content {
-      padding-top: 4.6rem;
-
-      padding-bottom:
-        0.55rem;
-    }
-
-    .home__title {
-      font-size: 0.65rem;
-    }
-
-    .home__names {
-      margin-top: 1.4rem;
-
-      font-size:
-        clamp(
-          4.2rem,
-          18vw,
-          6rem
-        );
-    }
-
-    .home__names small {
-      margin:
-        0.55rem
-        0;
-    }
-
-    .home__date-block {
-      margin-top: 1.25rem;
-    }
-
-    .home__faltan {
-      font-size: 2.8rem;
-
-      margin-bottom:
-        0.6rem;
-    }
-
-    .home__message {
-      margin-top: 0.65rem;
-
-      font-size: 0.68rem;
-    }
-
-    .home__continue {
-      margin-top: 0.45rem;
-    }
-  }
-
-  /* =====================================================
-     TABLET / DESKTOP
-  ===================================================== */
-
-  @media (min-width: 768px) {
-    .home__content {
-      width: min(
-        100%,
-        39rem
-      );
-
-      padding-top: 5.5rem;
-
-      padding-bottom: 2rem;
-    }
-
-    .home__background {
-      object-position:
-        center 40%;
-    }
-
-    .home__names {
-      font-size:
-        clamp(
-          7rem,
-          10vw,
-          10rem
-        );
-    }
-
-    .home__countdown {
-      max-width: 32rem;
-    }
-  }
-
-  /* =====================================================
-     ACCESIBILIDAD
-  ===================================================== */
-
-  @media (
-    prefers-reduced-motion:
-    reduce
-  ) {
-    .home {
-      transition: none;
-    }
-
-    .home__background {
-      transition: none;
-    }
-
-    .home__title,
-    .home__names,
-    .home__date-block,
-    .home__faltan,
-    .home__countdown,
-    .home__countdown-item,
-    .home__message,
-    .home__continue {
-      opacity: 1;
-
-      transform: none;
-
-      animation: none !important;
-
-      filter: none;
-    }
-
-    .home__continue svg {
-      animation: none;
-    }
-  }
+		background:
+			var(--espresso);
+
+		color:
+			var(--warm-white);
+
+		opacity: 0;
+
+		transform:
+			scale(1.02);
+
+		transition:
+			opacity
+				900ms
+				ease,
+
+			transform
+				1800ms
+				cubic-bezier(
+					0.16,
+					1,
+					0.3,
+					1
+				);
+	}
+
+
+	.home.is-visible {
+		opacity: 1;
+
+		transform:
+			scale(1);
+	}
+
+
+	/* =====================================================
+	   FOTOGRAFÍA
+	===================================================== */
+
+	.home__background {
+		position: absolute;
+
+		inset: 0;
+
+		width: 100%;
+		height: 100%;
+
+		display: block;
+
+		object-fit: cover;
+
+		object-position:
+			center 42%;
+
+		filter:
+			saturate(0.78)
+			contrast(0.94)
+			brightness(0.76);
+
+		transform:
+			scale(1.1);
+
+		transition:
+			transform
+				7s
+				cubic-bezier(
+					0.16,
+					1,
+					0.3,
+					1
+				),
+
+			filter
+				2.5s
+				ease;
+	}
+
+
+	.home.is-open
+	.home__background {
+
+		transform:
+			scale(1.015);
+
+		filter:
+			saturate(0.82)
+			contrast(0.95)
+			brightness(0.82);
+	}
+
+
+	/* =====================================================
+	   OVERLAY
+	===================================================== */
+
+	.home__overlay {
+		position: absolute;
+
+		inset: 0;
+
+		background:
+
+			linear-gradient(
+				180deg,
+
+				rgba(
+					40,
+					25,
+					10,
+					0.38
+				)
+				0%,
+
+				rgba(
+					112,
+					76,
+					50,
+					0.08
+				)
+				25%,
+
+				rgba(
+					109,
+					104,
+					83,
+					0.04
+				)
+				48%,
+
+				rgba(
+					112,
+					76,
+					50,
+					0.26
+				)
+				70%,
+
+				rgba(
+					40,
+					25,
+					10,
+					0.88
+				)
+				100%
+			),
+
+			linear-gradient(
+				90deg,
+
+				rgba(
+					40,
+					25,
+					10,
+					0.2
+				),
+
+				transparent
+					40%,
+
+				transparent
+					65%,
+
+				rgba(
+					40,
+					25,
+					10,
+					0.16
+				)
+			);
+
+		pointer-events: none;
+	}
+
+
+	/* =====================================================
+	   TEXTURA
+	===================================================== */
+
+	.home__grain {
+		position: absolute;
+
+		inset: 0;
+
+		opacity: 0.08;
+
+		background-image:
+			radial-gradient(
+				rgba(
+					254,
+					252,
+					248,
+					0.75
+				)
+				0.45px,
+
+				transparent
+				0.45px
+			);
+
+		background-size:
+			5px
+			5px;
+
+		mix-blend-mode:
+			soft-light;
+
+		pointer-events: none;
+	}
+
+
+	/* =====================================================
+	   CONTENIDO
+	===================================================== */
+
+	.home__content {
+		position: relative;
+
+		z-index: 2;
+
+		width:
+			min(
+				100%,
+				32rem
+			);
+
+		min-height:
+			100svh;
+
+		margin:
+			0 auto;
+
+		padding:
+
+			max(
+				5rem,
+				calc(
+					env(
+						safe-area-inset-top
+					)
+					+
+					3.5rem
+				)
+			)
+
+			1.2rem
+
+			max(
+				1.25rem,
+				env(
+					safe-area-inset-bottom
+				)
+			);
+
+		display: flex;
+
+		flex-direction: column;
+
+		align-items: center;
+
+		text-align: center;
+	}
+
+
+	.home__intro,
+	.home__names,
+	.home__date,
+	.home__countdown-area,
+	.home__message-area,
+	.home__continue {
+
+		opacity: 0;
+	}
+
+
+	/* =====================================================
+	   INTRO
+	===================================================== */
+
+	.home__intro {
+		width:
+			min(
+				90%,
+				22rem
+			);
+
+		display: grid;
+
+		grid-template-columns:
+			1fr
+			auto
+			1fr;
+
+		align-items: center;
+
+		gap: 0.85rem;
+	}
+
+
+	.home__intro-line {
+		height: 1px;
+
+		background:
+			linear-gradient(
+				90deg,
+
+				transparent,
+
+				var(
+					--champagne
+				)
+			);
+	}
+
+
+	.home__intro-line:last-child {
+		background:
+			linear-gradient(
+				90deg,
+
+				var(
+					--champagne
+				),
+
+				transparent
+			);
+	}
+
+
+	.home__title {
+		margin: 0;
+
+		color:
+			var(--ivory);
+
+		font-family:
+			Georgia,
+			"Times New Roman",
+			serif;
+
+		font-size:
+			clamp(
+				0.62rem,
+				2.7vw,
+				0.78rem
+			);
+
+		font-weight: 400;
+
+		letter-spacing:
+			0.34em;
+
+		text-transform:
+			uppercase;
+
+		white-space:
+			nowrap;
+	}
+
+
+	.home.is-open
+	.home__intro {
+
+		animation:
+			reveal-down
+			900ms
+			300ms
+			cubic-bezier(
+				0.22,
+				1,
+				0.36,
+				1
+			)
+			both;
+	}
+
+
+	/* =====================================================
+	   NOMBRES
+	===================================================== */
+
+	.home__names {
+		width: 100%;
+
+		margin:
+			clamp(
+				2rem,
+				5vh,
+				3.4rem
+			)
+			0
+			0;
+
+		display: flex;
+
+		flex-direction: column;
+
+		align-items: center;
+
+		color:
+			var(--warm-white);
+
+		font-family:
+			"Parisienne",
+			cursive;
+
+		font-size:
+			clamp(
+				5.3rem,
+				22vw,
+				8.5rem
+			);
+
+		font-weight: 400;
+
+		line-height:
+			0.64;
+
+		text-shadow:
+			0
+			0.2rem
+			1.4rem
+			rgba(
+				40,
+				25,
+				10,
+				0.35
+			);
+	}
+
+
+	.home__names span {
+		display: block;
+
+		white-space:
+			nowrap;
+	}
+
+
+	.home__names small {
+		margin:
+			1.8rem
+			0;
+
+		color:
+			var(--champagne);
+
+		font-size:
+			0.38em;
+
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	.home.is-open
+	.home__names {
+
+		animation:
+			reveal-names
+			1.3s
+			480ms
+			cubic-bezier(
+				0.16,
+				1,
+				0.3,
+				1
+			)
+			both;
+	}
+
+
+	/* =====================================================
+	   FECHA
+	===================================================== */
+
+	.home__date {
+		margin-top:
+			clamp(
+				1.8rem,
+				4vh,
+				2.8rem
+			);
+
+		display: flex;
+
+		align-items: center;
+
+		justify-content: center;
+
+		gap: 1rem;
+	}
+
+
+	.home__date > div {
+		display: flex;
+
+		flex-direction: column;
+
+		align-items: center;
+	}
+
+
+	.home__date time {
+		color:
+			var(--warm-white);
+
+		font-family:
+			Georgia,
+			"Times New Roman",
+			serif;
+
+		font-size:
+			clamp(
+				0.95rem,
+				4.5vw,
+				1.35rem
+			);
+
+		font-weight: 400;
+
+		letter-spacing:
+			0.12em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.home__date small {
+		margin-top:
+			0.45rem;
+
+		padding:
+			0.32rem
+			0.72rem;
+
+		border:
+			1px solid
+			rgba(
+				254,
+				252,
+				248,
+				0.2
+			);
+
+		border-radius:
+			999px;
+
+		background:
+			rgba(
+				109,
+				104,
+				83,
+				0.35
+			);
+
+		color:
+			var(--warm-white);
+
+		font-family:
+			Arial,
+			Helvetica,
+			sans-serif;
+
+		font-size:
+			0.48rem;
+
+		letter-spacing:
+			0.24em;
+
+		text-transform:
+			uppercase;
+
+		-webkit-backdrop-filter:
+			blur(10px);
+
+		backdrop-filter:
+			blur(10px);
+	}
+
+
+	.home__date-decoration {
+		color:
+			var(--sand);
+
+		font-size:
+			0.62rem;
+	}
+
+
+	.home.is-open
+	.home__date {
+
+		animation:
+			reveal
+			900ms
+			950ms
+			cubic-bezier(
+				0.22,
+				1,
+				0.36,
+				1
+			)
+			both;
+	}
+
+
+	/* =====================================================
+	   ÁREA CONTADOR
+	===================================================== */
+
+	.home__countdown-area {
+		width: 100%;
+
+		margin-top:
+			auto;
+	}
+
+
+	.home.is-open
+	.home__countdown-area {
+
+		animation:
+			reveal
+			900ms
+			1.2s
+			cubic-bezier(
+				0.22,
+				1,
+				0.36,
+				1
+			)
+			both;
+	}
+
+
+	.home__faltan {
+		margin:
+			0
+			0
+			1.05rem;
+
+		color:
+			var(--warm-white);
+
+		font-family:
+			"Parisienne",
+			cursive;
+
+		font-size:
+			clamp(
+				3.2rem,
+				13vw,
+				4.7rem
+			);
+
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	/* =====================================================
+	   CONTADOR — GLASSMORPHISM
+	===================================================== */
+
+	.home__countdown {
+		width:
+			min(
+				100%,
+				29rem
+			);
+
+		margin:
+			0 auto;
+
+		display: grid;
+
+		grid-template-columns:
+			repeat(
+				4,
+				minmax(
+					0,
+					1fr
+				)
+			);
+
+		gap:
+			clamp(
+				0.4rem,
+				2vw,
+				0.7rem
+			);
+	}
+
+
+	.home__countdown-item {
+		position: relative;
+
+		min-width: 0;
+
+		aspect-ratio:
+			1 / 1;
+
+		overflow: hidden;
+
+		border:
+			1px
+			solid
+			rgba(
+				254,
+				252,
+				248,
+				0.48
+			);
+
+		border-radius:
+			50%;
+
+		display: flex;
+
+		flex-direction: column;
+
+		align-items: center;
+
+		justify-content: center;
+
+		background:
+			linear-gradient(
+				145deg,
+
+				rgba(
+					254,
+					252,
+					248,
+					0.22
+				)
+				0%,
+
+				rgba(
+					236,
+					228,
+					217,
+					0.09
+				)
+				46%,
+
+				rgba(
+					109,
+					104,
+					83,
+					0.10
+				)
+				100%
+			);
+
+		box-shadow:
+			inset
+			0
+			1px
+			0
+			rgba(
+				255,
+				255,
+				255,
+				0.52
+			),
+
+			inset
+			0
+			-1px
+			0
+			rgba(
+				40,
+				25,
+				10,
+				0.1
+			),
+
+			0
+			0.75rem
+			1.8rem
+			rgba(
+				40,
+				25,
+				10,
+				0.18
+			);
+
+		-webkit-backdrop-filter:
+			blur(14px)
+			saturate(135%);
+
+		backdrop-filter:
+			blur(14px)
+			saturate(135%);
+
+		opacity: 0;
+
+		transform:
+			translateY(
+				1rem
+			)
+			scale(
+				0.9
+			);
+
+		transition:
+			border-color
+				350ms
+				ease,
+
+			box-shadow
+				350ms
+				ease;
+	}
+
+
+	/* Reflejo superior del cristal */
+
+	.home__countdown-item::before {
+		position: absolute;
+
+		z-index: 1;
+
+		top: 3%;
+		left: 13%;
+
+		width: 74%;
+		height: 48%;
+
+		border-radius: 50%;
+
+		content: "";
+
+		background:
+			radial-gradient(
+				ellipse,
+
+				rgba(
+					255,
+					255,
+					255,
+					0.36
+				)
+				0%,
+
+				rgba(
+					255,
+					255,
+					255,
+					0.13
+				)
+				34%,
+
+				rgba(
+					222,
+					199,
+					173,
+					0.04
+				)
+				55%,
+
+				transparent
+				74%
+			);
+
+		pointer-events: none;
+	}
+
+
+	/* Segundo borde interior */
+
+	.home__countdown-item::after {
+		position: absolute;
+
+		z-index: 1;
+
+		inset:
+			0.27rem;
+
+		border:
+			1px
+			solid
+			rgba(
+				254,
+				252,
+				248,
+				0.1
+			);
+
+		border-radius:
+			50%;
+
+		content: "";
+
+		pointer-events: none;
+	}
+
+
+	/* =====================================================
+	   TONOS DEL CRISTAL
+	===================================================== */
+
+	.home__countdown-item--champagne {
+		background:
+			linear-gradient(
+				145deg,
+
+				rgba(
+					254,
+					252,
+					248,
+					0.24
+				)
+				0%,
+
+				rgba(
+					222,
+					199,
+					173,
+					0.14
+				)
+				52%,
+
+				rgba(
+					198,
+					156,
+					112,
+					0.07
+				)
+				100%
+			);
+	}
+
+
+	.home__countdown-item--honey {
+		background:
+			linear-gradient(
+				145deg,
+
+				rgba(
+					254,
+					252,
+					248,
+					0.21
+				)
+				0%,
+
+				rgba(
+					165,
+					122,
+					79,
+					0.13
+				)
+				58%,
+
+				rgba(
+					222,
+					199,
+					173,
+					0.07
+				)
+				100%
+			);
+	}
+
+
+	.home__countdown-item--olive {
+		background:
+			linear-gradient(
+				145deg,
+
+				rgba(
+					254,
+					252,
+					248,
+					0.20
+				)
+				0%,
+
+				rgba(
+					109,
+					104,
+					83,
+					0.16
+				)
+				100%
+			);
+	}
+
+
+	.home__countdown-item--brown {
+		background:
+			linear-gradient(
+				145deg,
+
+				rgba(
+					254,
+					252,
+					248,
+					0.19
+				)
+				0%,
+
+				rgba(
+					112,
+					76,
+					50,
+					0.15
+				)
+				100%
+			);
+	}
+
+
+	.home__countdown-item strong {
+		position: relative;
+
+		z-index: 3;
+
+		color:
+			var(--warm-white);
+
+		font-family:
+			Georgia,
+			"Times New Roman",
+			serif;
+
+		font-size:
+			clamp(
+				1.35rem,
+				6.5vw,
+				2.05rem
+			);
+
+		font-weight: 400;
+
+		line-height: 1;
+
+		font-variant-numeric:
+			tabular-nums;
+
+		text-shadow:
+			0
+			1px
+			6px
+			rgba(
+				40,
+				25,
+				10,
+				0.42
+			);
+	}
+
+
+	.home__countdown-item span {
+		position: relative;
+
+		z-index: 3;
+
+		margin-top:
+			0.42rem;
+
+		color:
+			var(--warm-white);
+
+		font-family:
+			Arial,
+			Helvetica,
+			sans-serif;
+
+		font-size:
+			clamp(
+				0.36rem,
+				1.6vw,
+				0.5rem
+			);
+
+		font-weight: 600;
+
+		letter-spacing:
+			0.1em;
+
+		text-transform:
+			uppercase;
+
+		text-shadow:
+			0
+			1px
+			4px
+			rgba(
+				40,
+				25,
+				10,
+				0.32
+			);
+	}
+
+
+	/* =====================================================
+	   ENTRADA INDIVIDUAL DEL CONTADOR
+	===================================================== */
+
+	.home.is-open
+	.home__countdown-item {
+
+		animation:
+			counter-enter
+			800ms
+			cubic-bezier(
+				0.22,
+				1,
+				0.36,
+				1
+			)
+			both;
+	}
+
+
+	.home.is-open
+	.home__countdown-item:nth-child(1) {
+		animation-delay:
+			1.4s;
+	}
+
+
+	.home.is-open
+	.home__countdown-item:nth-child(2) {
+		animation-delay:
+			1.52s;
+	}
+
+
+	.home.is-open
+	.home__countdown-item:nth-child(3) {
+		animation-delay:
+			1.64s;
+	}
+
+
+	.home.is-open
+	.home__countdown-item:nth-child(4) {
+		animation-delay:
+			1.76s;
+	}
+
+
+	/* =====================================================
+	   MENSAJE
+	===================================================== */
+
+	.home__message-area {
+		width:
+			min(
+				88%,
+				24rem
+			);
+
+		margin-top:
+			1.25rem;
+
+		display: flex;
+
+		flex-direction: column;
+
+		align-items: center;
+	}
+
+
+	.home__message-area > span {
+		height:
+			1.7rem;
+
+		color:
+			var(--champagne);
+
+		font-family:
+			Georgia,
+			serif;
+
+		font-size:
+			2.4rem;
+
+		line-height: 1;
+	}
+
+
+	.home__message {
+		margin: 0;
+
+		color:
+			var(--ivory);
+
+		font-family:
+			Georgia,
+			"Times New Roman",
+			serif;
+
+		font-size:
+			clamp(
+				0.69rem,
+				2.7vw,
+				0.84rem
+			);
+
+		font-style:
+			italic;
+
+		line-height:
+			1.6;
+
+		text-shadow:
+			0
+			1px
+			4px
+			rgba(
+				40,
+				25,
+				10,
+				0.4
+			);
+	}
+
+
+	.home.is-open
+	.home__message-area {
+
+		animation:
+			reveal
+			900ms
+			1.95s
+			ease
+			both;
+	}
+
+
+	/* =====================================================
+	   DESLIZA
+	===================================================== */
+
+	.home__continue {
+		margin-top:
+			1rem;
+
+		display: flex;
+
+		flex-direction: column;
+
+		align-items: center;
+
+		gap:
+			0.25rem;
+
+		color:
+			var(--champagne);
+
+		font-family:
+			Arial,
+			Helvetica,
+			sans-serif;
+
+		font-size:
+			0.43rem;
+
+		font-weight: 600;
+
+		letter-spacing:
+			0.2em;
+
+		text-decoration:
+			none;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.home__continue svg {
+		width:
+			1.15rem;
+
+		fill: none;
+
+		stroke:
+			var(--sand);
+
+		stroke-width:
+			1.5;
+
+		stroke-linecap:
+			round;
+
+		stroke-linejoin:
+			round;
+
+		animation:
+			arrow
+			1.7s
+			ease-in-out
+			infinite;
+	}
+
+
+	.home.is-open
+	.home__continue {
+
+		animation:
+			reveal
+			900ms
+			2.15s
+			ease
+			both;
+	}
+
+
+	/* =====================================================
+	   ANIMACIONES
+	===================================================== */
+
+	@keyframes reveal {
+		from {
+			opacity: 0;
+
+			transform:
+				translateY(
+					1rem
+				);
+		}
+
+		to {
+			opacity: 1;
+
+			transform:
+				translateY(
+					0
+				);
+		}
+	}
+
+
+	@keyframes reveal-down {
+		from {
+			opacity: 0;
+
+			transform:
+				translateY(
+					-0.7rem
+				);
+		}
+
+		to {
+			opacity: 1;
+
+			transform:
+				translateY(
+					0
+				);
+		}
+	}
+
+
+	@keyframes reveal-names {
+		from {
+			opacity: 0;
+
+			filter:
+				blur(
+					7px
+				);
+
+			transform:
+				translateY(
+					1.5rem
+				)
+				scale(
+					0.96
+				);
+		}
+
+		to {
+			opacity: 1;
+
+			filter:
+				blur(
+					0
+				);
+
+			transform:
+				translateY(
+					0
+				)
+				scale(
+					1
+				);
+		}
+	}
+
+
+	@keyframes counter-enter {
+		from {
+			opacity: 0;
+
+			transform:
+				translateY(
+					1rem
+				)
+				scale(
+					0.9
+				);
+		}
+
+		to {
+			opacity: 1;
+
+			transform:
+				translateY(
+					0
+				)
+				scale(
+					1
+				);
+		}
+	}
+
+
+	@keyframes arrow {
+		0%,
+		100% {
+			transform:
+				translateY(
+					0
+				);
+
+			opacity:
+				0.45;
+		}
+
+		50% {
+			transform:
+				translateY(
+					0.3rem
+				);
+
+			opacity: 1;
+		}
+	}
+
+
+	/* =====================================================
+	   TELÉFONOS PEQUEÑOS
+	===================================================== */
+
+	@media (
+		max-width:
+		380px
+	) {
+
+		.home__content {
+			padding-inline:
+				0.8rem;
+		}
+
+
+		.home__names {
+			font-size:
+				clamp(
+					4.6rem,
+					20vw,
+					6.2rem
+				);
+		}
+
+
+		.home__countdown {
+			gap:
+				0.3rem;
+		}
+
+
+		.home__countdown-item strong {
+			font-size:
+				1.3rem;
+		}
+	}
+
+
+	/* =====================================================
+	   PANTALLAS BAJAS
+	===================================================== */
+
+	@media (
+		max-height:
+		740px
+	) {
+
+		.home__content {
+			padding-top:
+				3.8rem;
+
+			padding-bottom:
+				0.6rem;
+		}
+
+
+		.home__names {
+			margin-top:
+				1.3rem;
+
+			font-size:
+				clamp(
+					4.2rem,
+					17vw,
+					5.7rem
+				);
+		}
+
+
+		.home__names small {
+			margin:
+				1.5rem
+				0;
+		}
+
+
+		.home__date {
+			margin-top:
+				1rem;
+		}
+
+
+		.home__faltan {
+			margin-bottom:
+				0.5rem;
+
+			font-size:
+				2.7rem;
+		}
+
+
+		.home__message-area {
+			margin-top:
+				0.6rem;
+		}
+
+
+		.home__message-area > span {
+			height:
+				1.2rem;
+
+			font-size:
+				1.8rem;
+		}
+
+
+		.home__message {
+			font-size:
+				0.65rem;
+
+			line-height:
+				1.45;
+		}
+
+
+		.home__continue {
+			margin-top:
+				0.45rem;
+		}
+	}
+
+
+	/* =====================================================
+	   TABLET / DESKTOP
+	===================================================== */
+
+	@media (
+		min-width:
+		768px
+	) {
+
+		.home__content {
+			width:
+				min(
+					100%,
+					39rem
+				);
+
+			padding-top:
+				5rem;
+
+			padding-bottom:
+				2rem;
+		}
+
+
+		.home__background {
+			object-position:
+				center 40%;
+		}
+
+
+		.home__names {
+			font-size:
+				clamp(
+					7rem,
+					10vw,
+					9.5rem
+				);
+		}
+
+
+		.home__countdown {
+			max-width:
+				31rem;
+		}
+	}
+
+
+	/* =====================================================
+	   ACCESIBILIDAD
+	===================================================== */
+
+	@media (
+		prefers-reduced-motion:
+		reduce
+	) {
+
+		.home,
+		.home__background {
+			transition:
+				none;
+		}
+
+
+		.home__intro,
+		.home__names,
+		.home__date,
+		.home__countdown-area,
+		.home__countdown-item,
+		.home__message-area,
+		.home__continue {
+
+			opacity: 1;
+
+			filter: none;
+
+			transform: none;
+
+			animation:
+				none
+				!important;
+		}
+
+
+		.home__continue svg {
+			animation: none;
+		}
+	}
+
 </style>
