@@ -2581,8 +2581,8 @@ const guestOptions = Array.from(
 		background:
 			linear-gradient(
 				145deg,
-				rgba(119, 115, 97, 0.08),
-				rgba(109, 104, 83, 0.05)
+				rgba(119, 115, 97, 0.03),
+				rgba(109, 104, 83, 0.02)
 			);
 
 		text-align:
@@ -2608,11 +2608,11 @@ const guestOptions = Array.from(
 		background:
 			linear-gradient(
 				145deg,
-				rgba(119, 115, 97, 0.15),
-				rgba(109, 104, 83, 0.12)
+				rgba(119, 115, 97, 0.08),
+				rgba(109, 104, 83, 0.06)
 			);
-		-webkit-backdrop-filter: blur(4px);
-		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(2px);
+		backdrop-filter: blur(2px);
 		z-index: -2;
 	}
 
@@ -2736,22 +2736,22 @@ const guestOptions = Array.from(
 			relative;
 
 		width:
-			5rem;
+			6.5rem;
 
 		height:
-			5rem;
+			6.5rem;
 
 		margin:
-			1.5rem
+			1.2rem
 			auto;
 
 		border:
-			1.5px solid
+			2px solid
 			rgba(
 				109,
 				104,
 				83,
-				0.6
+				0.7
 			);
 
 		border-radius:
@@ -2768,7 +2768,7 @@ const guestOptions = Array.from(
 				109,
 				104,
 				83,
-				0.2
+				0.25
 			);
 
 		-webkit-backdrop-filter:
@@ -2791,7 +2791,7 @@ const guestOptions = Array.from(
 				109,
 				104,
 				83,
-				0.2
+				0.25
 			);
 
 		animation:
@@ -2843,22 +2843,28 @@ const guestOptions = Array.from(
 			block;
 
 		color:
-			var(--ivory);
+			var(--golden-sand);
 
 		font-size:
-			0.65rem;
+			clamp(
+				0.5rem,
+				1.8vw,
+				0.75rem
+			);
 
 		letter-spacing:
-			0.25em;
+			0.35em;
 
 		text-transform:
 			uppercase;
+
+		font-weight: 600;
 	}
 
 
 	.location__heading h2 {
 		margin:
-			0.6rem 0 0;
+			1rem 0 0;
 
 		color:
 			var(--warm-white);
@@ -2869,23 +2875,40 @@ const guestOptions = Array.from(
 
 		font-size:
 			clamp(
-				2.7rem,
-				10vw,
-				4.5rem
+				3.8rem,
+				14vw,
+				6.5rem
 			);
+
+		font-weight: 700;
+
+		line-height: 1.05;
+
+		text-shadow:
+			0 2px 8px rgba(40, 25, 10, 0.4);
 	}
 
 
 	.location__heading p {
+		margin: 0.8rem 0 0;
+
 		color:
-			var(--ivory);
+			var(--warm-white);
 
 		font-family:
 			'Cormorant Garamond',
 			serif;
 
 		font-size:
-			1.05rem;
+			clamp(
+				1rem,
+				3vw,
+				1.35rem
+			);
+
+		line-height: 1.5;
+
+		font-weight: 500;
 	}
 
 
