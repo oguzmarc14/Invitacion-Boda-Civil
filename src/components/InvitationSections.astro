@@ -1475,7 +1475,7 @@ const guestOptions = Array.from(
 		serif;
 
 	/* Un poco más pequeño que los H2 */
-	font-size: clamp(2.25rem, 8.5vw, 3.8rem);
+	font-size: clamp(1.4rem, 7vw, 3.8rem);
 
 	font-weight: 500;
 
@@ -1498,7 +1498,7 @@ const guestOptions = Array.from(
 		cursive;
 
 	/* Conservamos "para siempre" grande y elegante */
-	font-size: 1.34em;
+	font-size: clamp(1rem, 6vw, 1.34em);
 
 	font-weight: 600;
 
@@ -1506,10 +1506,11 @@ const guestOptions = Array.from(
 
 	line-height: 0.95;
 
-	letter-spacing: 2px;
+	letter-spacing: clamp(1px, 1.5vw, 2px);
 
 	text-align: center;
-	white-space: nowrap;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 	text-shadow:
 		0 0 1px rgba(0, 0, 0, 0.05),
 		0 1px 2px rgba(0, 0, 0, 0.1);
@@ -1627,8 +1628,8 @@ const guestOptions = Array.from(
 
 		font-size:
 			clamp(
-				2.5rem,
-				10vw,
+				1.6rem,
+				9vw,
 				3.65rem
 			);
 
