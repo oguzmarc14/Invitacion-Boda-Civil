@@ -4574,10 +4574,9 @@ const guestOptions = Array.from(
 			linear-gradient(
 				180deg,
 				#6d6853 0%,
-				#a9a590 16%,
-				#ddd7cc 42%,
-				#ebe5dc 72%,
-				#f2eee7 100%
+				#85816c 28%,
+				#77735f 64%,
+				#6d6853 100%
 			);
 	}
 
@@ -4605,36 +4604,81 @@ const guestOptions = Array.from(
 
 	.dress-code__card {
 		position: relative;
-		border-radius: 1.6rem;
+		overflow: hidden;
+		border-color: rgba(254, 252, 248, 0.48);
+		border-radius: 0.55rem 1.7rem 0.55rem 1.7rem;
 		background:
 			linear-gradient(
 				145deg,
-				rgba(254, 252, 248, 0.58),
-				rgba(254, 252, 248, 0.2)
+				rgba(254, 252, 248, 0.2),
+				rgba(236, 228, 217, 0.06)
 			);
 		box-shadow:
-			inset 0 1px 0 rgba(254, 252, 248, 0.76),
-			0 1rem 2.6rem rgba(40, 25, 10, 0.1);
+			inset 0 1px 0 rgba(254, 252, 248, 0.55),
+			inset 0 -1px 0 rgba(40, 25, 10, 0.12),
+			0 1rem 2.8rem rgba(40, 25, 10, 0.18);
+		-webkit-backdrop-filter: blur(13px) saturate(118%);
+		backdrop-filter: blur(13px) saturate(118%);
+	}
+
+	.dress-code__card::after {
+		position: absolute;
+		top: 0;
+		left: 12%;
+		width: 76%;
+		height: 1px;
+		background:
+			linear-gradient(
+				90deg,
+				transparent,
+				rgba(254, 252, 248, 0.9),
+				transparent
+			);
+		content: '';
 	}
 
 	.dress-code__icon {
-		width: 2.4rem;
-		height: 2.4rem;
+		width: 3.1rem;
+		height: 3.1rem;
 		margin: 0 auto;
-		border: 1px solid rgba(109, 104, 83, 0.28);
+		border: 1px solid rgba(254, 252, 248, 0.5);
 		border-radius: 50%;
 		display: grid;
 		place-items: center;
-		background: rgba(109, 104, 83, 0.1);
-		color: var(--olive);
+		background: rgba(254, 252, 248, 0.12);
+		color: var(--champagne);
+		box-shadow:
+			inset 0 1px 0 rgba(254, 252, 248, 0.58),
+			0 0.6rem 1.4rem rgba(40, 25, 10, 0.13);
+		-webkit-backdrop-filter: blur(9px);
+		backdrop-filter: blur(9px);
+	}
+
+	.dress-code__card strong {
+		color: var(--warm-white);
+		font-family: 'Cormorant Garamond', Georgia, serif;
+		font-size: clamp(1.8rem, 7vw, 2.4rem);
+		font-weight: 500;
+	}
+
+	.dress-code__card p {
+		color: var(--ivory);
+		font-family: 'Cormorant Garamond', Georgia, serif;
+		font-size: clamp(1.05rem, 4vw, 1.25rem);
+	}
+
+	.dress-code__card small {
+		display: block;
+		color: var(--champagne);
+		font-weight: 600;
+		letter-spacing: 0.08em;
 	}
 
 	.notices {
 		background:
 			linear-gradient(
 				180deg,
-				#f2eee7 0%,
-				#6d6853 6rem,
+				#6d6853 0%,
 				#4e4b3d 25rem,
 				#d8d1c5 34rem,
 				#f6f1ea 44rem,
@@ -4779,10 +4823,14 @@ const guestOptions = Array.from(
 			linear-gradient(
 				180deg,
 				#6d6853 0%,
-				rgba(109, 104, 83, 0.78) 12%,
-				rgba(40, 25, 10, 0.6) 56%,
-				rgba(40, 25, 10, 0.94) 100%
+				rgba(109, 104, 83, 0.3) 10%,
+				rgba(40, 25, 10, 0.2) 52%,
+				rgba(40, 25, 10, 0.52) 100%
 			);
+	}
+
+	.closing > img {
+		filter: saturate(0.88) contrast(1.02) brightness(1.04);
 	}
 
 	.closing__content {
@@ -4790,14 +4838,15 @@ const guestOptions = Array.from(
 		background:
 			linear-gradient(
 				145deg,
-				rgba(254, 252, 248, 0.16),
-				rgba(109, 104, 83, 0.08)
+				rgba(254, 252, 248, 0.1),
+				rgba(109, 104, 83, 0.025)
 			);
 		box-shadow:
-			inset 0 1px 0 rgba(254, 252, 248, 0.4),
-			0 1.25rem 3rem rgba(40, 25, 10, 0.2);
-		-webkit-backdrop-filter: blur(9px) saturate(112%);
-		backdrop-filter: blur(9px) saturate(112%);
+			inset 0 1px 0 rgba(254, 252, 248, 0.34),
+			0 1.25rem 3rem rgba(40, 25, 10, 0.16);
+		-webkit-backdrop-filter: blur(4px) saturate(108%);
+		backdrop-filter: blur(4px) saturate(108%);
+		text-shadow: 0 2px 12px rgba(40, 25, 10, 0.58);
 	}
 
 	.button:focus-visible,
