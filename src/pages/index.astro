@@ -63,6 +63,251 @@ import { invitation } from '../data/invitation';
 			musicButton.setAttribute('aria-label', 'Reproducir música');
 		}
 	});
+
+	/*
+	 * Entradas progresivas para las cards y los textos.
+	 * Las animaciones usan transforms visuales: no cambian el flujo,
+	 * las medidas ni la posición final de ningún componente.
+	 */
+	const entranceSections =
+		document.querySelectorAll<HTMLElement>(
+			'[data-reveal]'
+		);
+
+	const entranceCardSelector = [
+		'.story__photo-wrap',
+		'.story__content',
+		'.countdown-heading',
+		'.event-countdown__item',
+		'.countdown-button',
+		'.gallery__item',
+		'.event__summary-card',
+		'.timeline__item',
+		'.location__card',
+		'.location__pin',
+		'.location-button',
+		'.dress-code .section-heading',
+		'.dress-code__card',
+		'.dress-code__colors',
+		'.notices__grid article',
+		'.rsvp-form',
+		'.rsvp-form__submit',
+		'.closing__content',
+	].join(',');
+
+	const entranceTextSelector = [
+		'.section-heading > span',
+		'.section-heading > h2',
+		'.section-heading > p',
+		'.story__heading > span',
+		'.story__heading h3',
+		'.story__text',
+		'.story__signature',
+		'.event-countdown__item strong',
+		'.event-countdown__item > span',
+		'.event__summary-card > span',
+		'.event__summary-card > strong',
+		'.timeline__item time',
+		'.timeline__item h3',
+		'.timeline__item p',
+		'.location__eyebrow',
+		'.location__heading > span',
+		'.location__heading h2',
+		'.location__heading p',
+		'.dress-code__card > strong',
+		'.dress-code__card > p',
+		'.dress-code__card > small',
+		'.notices__grid h3',
+		'.notices__grid p',
+		'.rsvp-form label',
+		'.closing__content > span',
+		'.closing__content h2',
+		'.closing__content > p',
+		'.closing__content > time',
+	].join(',');
+
+	const reducedMotion =
+		window.matchMedia(
+			'(prefers-reduced-motion: reduce)'
+		).matches;
+
+	let entranceObserver:
+		| IntersectionObserver
+		| undefined;
+
+	if (
+		!reducedMotion &&
+		'IntersectionObserver' in window &&
+		'animate' in Element.prototype
+	) {
+		const animationsBySection =
+			new Map<HTMLElement, Animation[]>();
+
+		entranceSections.forEach(
+			(section) => {
+				const animations: Animation[] = [];
+
+				section
+					.querySelectorAll<HTMLElement>(
+						entranceCardSelector
+					)
+					.forEach(
+						(card, index) => {
+							const animation =
+								card.animate(
+									[
+										{
+											opacity: 0,
+											transform:
+												'translateY(1.35rem) scale(0.985)',
+										},
+										{
+											opacity: 1,
+											transform:
+												'translateY(0) scale(1)',
+										},
+									],
+									{
+										duration: 820,
+										delay:
+											Math.min(
+												index * 85,
+												340
+											),
+										easing:
+											'cubic-bezier(0.22, 1, 0.36, 1)',
+										fill: 'both',
+									}
+								);
+
+							animation.pause();
+							animations.push(animation);
+						}
+					);
+
+				section
+					.querySelectorAll<HTMLElement>(
+						entranceTextSelector
+					)
+					.forEach(
+						(element, index) => {
+							const animation =
+								element.animate(
+									[
+										{
+											opacity: 0,
+											transform:
+												'translateY(0.65rem)',
+										},
+										{
+											opacity: 1,
+											transform:
+												'translateY(0)',
+										},
+									],
+									{
+										duration: 680,
+										delay:
+											160 +
+											Math.min(
+												index * 42,
+												420
+											),
+										easing:
+											'cubic-bezier(0.22, 1, 0.36, 1)',
+										fill: 'both',
+									}
+								);
+
+							animation.pause();
+							animations.push(animation);
+						}
+					);
+
+				if (animations.length > 0) {
+					animationsBySection.set(
+						section,
+						animations
+					);
+				}
+			}
+		);
+
+		entranceObserver =
+			new IntersectionObserver(
+				(entries) => {
+					entries.forEach(
+						(entry) => {
+							if (!entry.isIntersecting) {
+								return;
+							}
+
+							const section =
+								entry.target as HTMLElement;
+
+							const animations =
+								animationsBySection.get(
+									section
+								) ?? [];
+
+							animations.forEach(
+								(animation) => {
+									animation.play();
+
+									void animation.finished
+										.then(
+											() => {
+												animation.cancel();
+											}
+										)
+										.catch(
+											() => {}
+										);
+								}
+							);
+
+							entranceObserver?.unobserve(
+								section
+							);
+						}
+					);
+				},
+				{
+					threshold: 0.1,
+					rootMargin:
+						'0px 0px -4% 0px',
+				}
+			);
+
+		animationsBySection.forEach(
+			(_, section) => {
+				entranceObserver?.observe(
+					section
+				);
+			}
+		);
+
+		document.addEventListener(
+			'astro:before-swap',
+			() => {
+				entranceObserver?.disconnect();
+
+				animationsBySection.forEach(
+					(animations) => {
+						animations.forEach(
+							(animation) => {
+								animation.cancel();
+							}
+						);
+					}
+				);
+			},
+			{
+				once: true,
+			}
+		);
+	}
+
 </script>
 
 <style>
