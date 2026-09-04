@@ -1346,6 +1346,11 @@ const guestOptions = Array.from(
 	white-space: nowrap;
 }
 
+.story__heading > h3:not(.story__forever) {
+	margin-top: 1rem;
+	font-size: clamp(1.55rem, 7.8vw, 4.15rem);
+}
+
 .story__heading h3 em {
 	display: block;
 
@@ -1358,7 +1363,7 @@ const guestOptions = Array.from(
 		cursive;
 
 	/* Conservamos "para siempre" grande y elegante */
-	font-size: clamp(1rem, 6vw, 1.34em);
+	font-size: clamp(1.15rem, 6.8vw, 1.5em);
 
 	font-weight: 600;
 
@@ -3753,7 +3758,7 @@ const guestOptions = Array.from(
 		display: block;
 		font-size: 0.8em;
 		line-height: 1;
-		color: var(--honey);
+		color: var(--olive);
 		margin: 0.2rem 0;
 	}
 
@@ -3790,6 +3795,47 @@ const guestOptions = Array.from(
 
 		transform:
 			translateY(0);
+	}
+
+	[data-reveal-gallery],
+	[data-reveal-timeline],
+	[data-reveal-notice] {
+		opacity: 0;
+	}
+
+	.is-revealed [data-reveal-gallery],
+	.is-revealed [data-reveal-timeline],
+	.is-revealed [data-reveal-notice] {
+		opacity: 1;
+	}
+
+	[data-reveal] {
+		opacity: 0;
+		transition: opacity 900ms ease;
+	}
+
+	[data-reveal].is-revealed {
+		opacity: 1;
+	}
+
+	.section,
+	.closing {
+		:where(
+			h1,
+			h2,
+			h3,
+			p,
+			span,
+			strong,
+			small,
+			time,
+			a,
+			button,
+			label,
+			li
+		) {
+			text-shadow: 0 1px 3px rgba(40, 25, 10, 0.28);
+		}
 	}
 
 
@@ -4312,6 +4358,8 @@ const guestOptions = Array.from(
 	.countdown-section__content {
 		width: min(100%, 34rem);
 		padding-inline: clamp(1rem, 4vw, 2rem);
+		padding-top: max(1.2rem, env(safe-area-inset-top) + 0.8rem);
+		transform: translateY(-2rem);
 	}
 
 	.countdown-heading {
@@ -4334,6 +4382,10 @@ const guestOptions = Array.from(
 	.countdown-heading > span,
 	.countdown-heading h2 {
 		color: var(--espresso);
+	}
+
+	.event-countdown {
+		margin-top: 1rem;
 	}
 
 	.event-countdown__item {
