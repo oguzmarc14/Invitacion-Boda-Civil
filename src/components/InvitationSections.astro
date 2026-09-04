@@ -4767,6 +4767,7 @@ const guestOptions = Array.from(
 				#f1eae0 0%,
 				#ddd5c9 30%,
 				#a4a08b 70%,
+				#6d6853 88%,
 				#6d6853 100%
 			);
 	}
@@ -4822,11 +4823,38 @@ const guestOptions = Array.from(
 		background:
 			linear-gradient(
 				180deg,
-				#6d6853 0%,
-				rgba(109, 104, 83, 0.3) 10%,
+				#6d6853 0,
+				#6d6853 3.5rem,
+				rgba(109, 104, 83, 0.68) 7rem,
+				rgba(109, 104, 83, 0.3) 11rem,
 				rgba(40, 25, 10, 0.2) 52%,
 				rgba(40, 25, 10, 0.52) 100%
 			);
+	}
+
+	.closing {
+		margin-top: -1px;
+		background: var(--olive);
+	}
+
+	.closing::before {
+		position: absolute;
+		z-index: 1;
+		top: -1px;
+		left: -10%;
+		width: 120%;
+		height: 11rem;
+		background:
+			linear-gradient(
+				180deg,
+				#6d6853 0%,
+				rgba(109, 104, 83, 0.9) 34%,
+				rgba(109, 104, 83, 0.4) 68%,
+				transparent 100%
+			);
+		clip-path: ellipse(78% 100% at 50% 0%);
+		content: '';
+		pointer-events: none;
 	}
 
 	.closing > img {
