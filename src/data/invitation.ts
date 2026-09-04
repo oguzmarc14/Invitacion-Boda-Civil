@@ -68,36 +68,57 @@ export const invitation = {
 
 		galeria: [
 			{
-				src:
-					'/images/welcome-couple.webp',
-
-				alt:
-					'Nayzeth Gutiérrez y Adán Pérez compartiendo un momento especial',
-
-				posicion:
-					'center 18%',
+				src: '/images/galeria/boda_01.webp',
+				alt: 'Fotografía de Nayzeth y Adán 01',
+				posicion: 'center',
 			},
 
 			{
-				src:
-					'/images/welcome-couple.webp',
-
-				alt:
-					'Retrato de Nayzeth y Adán Omar',
-
-				posicion:
-					'35% center',
+				src: '/images/galeria/boda_02.webp',
+				alt: 'Fotografía de Nayzeth y Adán 02',
+				posicion: 'center',
 			},
 
 			{
-				src:
-					'/images/welcome-couple.webp',
+				src: '/images/galeria/boda_03.webp',
+				alt: 'Fotografía de Nayzeth y Adán 03',
+				posicion: 'center',
+			},
 
-				alt:
-					'Historia de amor de Nayzeth y Adán Omar',
+			{
+				src: '/images/galeria/boda_04.webp',
+				alt: 'Fotografía de Nayzeth y Adán 04',
+				posicion: 'center',
+			},
 
-				posicion:
-					'70% center',
+			{
+				src: '/images/galeria/boda_05.webp',
+				alt: 'Fotografía de Nayzeth y Adán 05',
+				posicion: 'center',
+			},
+
+			{
+				src: '/images/galeria/boda_06.webp',
+				alt: 'Fotografía de Nayzeth y Adán 06',
+				posicion: 'center',
+			},
+
+			{
+				src: '/images/galeria/boda_07.webp',
+				alt: 'Fotografía de Nayzeth y Adán 07',
+				posicion: 'center',
+			},
+
+			{
+				src: '/images/galeria/boda_08.webp',
+				alt: 'Fotografía de Nayzeth y Adán 08',
+				posicion: 'center',
+			},
+
+			{
+				src: '/images/galeria/boda_09.webp',
+				alt: 'Fotografía de Nayzeth y Adán 09',
+				posicion: 'center',
 			},
 		],
 	},
