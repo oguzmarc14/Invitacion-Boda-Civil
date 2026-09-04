@@ -61,7 +61,7 @@ export const invitation = {
 			'/images/welcome-couple.webp',
 
 		tematica:
-			'/images/fondo11.webp',
+			'/images/fondo.webp',
 
 		salon:
 			'/images/salon.png',

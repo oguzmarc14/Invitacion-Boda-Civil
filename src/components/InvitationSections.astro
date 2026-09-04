@@ -14,7 +14,6 @@ const {
 	imagenes,
 	itinerario,
 	vestimenta: vestimentaOriginal,
-	regalos,
 	rsvp,
 	avisos,
 } = invitation;
@@ -73,18 +72,6 @@ const guestOptions = Array.from(
 	(_, index) => index
 );
 ---
-
-<nav
-	class="section-nav"
-	aria-label="Secciones de la invitación"
->
-	<a href="#historia">Nosotros</a>
-	<a href="#galeria">Galería</a>
-	<a href="#evento">Evento</a>
-	<a href="#ubicacion">Ubicación</a>
-	<a href="#confirmacion">Confirmar</a>
-</nav>
-
 
 <!-- =====================================================
      HISTORIA
@@ -487,7 +474,8 @@ const guestOptions = Array.from(
 			</span>
 
 			<h2>
-				{evento.salon}
+				<small>Salón</small>
+				<strong>Los Pavorreales</strong>
 			</h2>
 
 			<p>
@@ -577,74 +565,6 @@ const guestOptions = Array.from(
 			<span style="--color: #a57a4f"></span>
 			<span style="--color: #c69c70"></span>
 		</div>
-	</div>
-</section>
-
-
-<!-- =====================================================
-     REGALOS
-===================================================== -->
-
-<section
-	class="section gifts"
-	id="regalos"
-	data-reveal
->
-	<div
-		class="gifts__content"
-		data-reveal-child
-	>
-		<div
-			class="
-				section-heading
-				section-heading--left
-			"
-		>
-			<span>
-				Con mucho cariño
-			</span>
-
-			<h2>
-				{regalos.titulo}
-			</h2>
-		</div>
-
-		<p>
-			{regalos.mensaje}
-		</p>
-
-		<div class="gifts__event">
-			<span>
-				{regalos.tienda}
-			</span>
-
-			<strong>
-				Evento {regalos.numeroEvento}
-			</strong>
-		</div>
-
-		{
-			regalos.url !== '#' && (
-				<a
-					class="button button--olive"
-					href={regalos.url}
-					target="_blank"
-					rel="noreferrer"
-				>
-					Ver mesa de regalos
-				</a>
-			)
-		}
-	</div>
-
-	<div
-		class="gifts__monogram"
-		aria-hidden="true"
-		data-reveal-child
-	>
-		{pareja.novio.charAt(0)}
-		&amp;
-		{pareja.novia.charAt(0)}
 	</div>
 </section>
 
@@ -1189,85 +1109,6 @@ const guestOptions = Array.from(
 
 
 	/* =====================================================
-	   NAV
-	===================================================== */
-
-	.section-nav {
-		position: sticky;
-
-		z-index: 20;
-
-		top: 0;
-
-		width: 100%;
-
-		overflow-x: auto;
-
-		display: flex;
-
-		gap: 0.35rem;
-
-		padding:
-			0.7rem
-			1rem;
-
-		background:
-			rgba(
-				254,
-				252,
-				248,
-				0.9
-			);
-
-		border-bottom:
-			1px solid
-			var(--champagne);
-
-		-webkit-backdrop-filter:
-			blur(14px);
-
-		backdrop-filter:
-			blur(14px);
-	}
-
-
-	.section-nav a {
-		flex:
-			0 0 auto;
-
-		padding:
-			0.55rem
-			0.9rem;
-
-		border:
-			1px solid
-			var(--ivory);
-
-		border-radius: 999px;
-
-		color:
-			var(--espresso);
-
-		font-family:
-			'Cormorant Garamond',
-			serif;
-
-		font-size:
-			0.6rem;
-
-		font-weight: 600;
-
-		letter-spacing:
-			0.13em;
-
-		text-decoration: none;
-
-		text-transform:
-			uppercase;
-	}
-
-
-	/* =====================================================
 	   HISTORIA
 	===================================================== */
 
@@ -1286,8 +1127,11 @@ const guestOptions = Array.from(
 		background:
 			linear-gradient(
 				160deg,
-				var(--warm-white)
+				#7e756c
 					0%,
+
+				#7e756c
+					18%,
 
 				#f7f2ea
 					52%,
@@ -2251,8 +2095,53 @@ const guestOptions = Array.from(
 	===================================================== */
 
 	.gallery {
+		position: relative;
+		overflow: hidden;
 		background:
-			var(--ivory);
+			linear-gradient(
+				180deg,
+				#dcd4c9 0%,
+				#dcd4c9 78%,
+				#dec7ad 100%
+			);
+	}
+
+	.gallery::before {
+		position: absolute;
+		top: -5rem;
+		right: -4rem;
+		width: 16rem;
+		height: 16rem;
+		border: 1px solid rgba(109, 104, 83, 0.16);
+		border-radius: 50%;
+		box-shadow:
+			0 0 0 1.5rem rgba(198, 156, 112, 0.08),
+			0 0 0 3rem rgba(109, 104, 83, 0.05);
+		content: '';
+		pointer-events: none;
+	}
+
+	.gallery::after {
+		position: absolute;
+		top: 1.5rem;
+		left: 50%;
+		width: min(72%, 20rem);
+		height: 1px;
+		background:
+			linear-gradient(
+				90deg,
+				transparent,
+				rgba(198, 156, 112, 0.5),
+				transparent
+			);
+		content: '';
+		transform: translateX(-50%);
+		pointer-events: none;
+	}
+
+	.gallery > .section-heading {
+		position: relative;
+		z-index: 1;
 	}
 
 
@@ -2344,7 +2233,20 @@ const guestOptions = Array.from(
 
 	.event {
 		background:
-			var(--warm-white);
+			linear-gradient(
+				180deg,
+				var(--champagne) 0%,
+				#e3d6c6 14%,
+				#dcd4c9 28%,
+				#dcd4c9 52%,
+				#E3D0BD 72%,
+				#e3d0bd 100%
+			);
+	}
+
+	.event .section-heading > span,
+	.event .section-heading h2 {
+		color: var(--espresso);
 	}
 
 
@@ -2693,6 +2595,17 @@ const guestOptions = Array.from(
 		z-index: -2;
 	}
 
+	.location__overlay {
+		background:
+			linear-gradient(
+				180deg,
+				rgba(222, 199, 173, 0.72) 0%,
+				rgba(222, 199, 173, 0.28) 12%,
+				rgba(119, 115, 97, 0.08) 28%,
+				rgba(109, 104, 83, 0.06) 100%
+			);
+	}
+
 
 	.location__ornament {
 		position:
@@ -2806,7 +2719,7 @@ const guestOptions = Array.from(
 
 	.location__eyebrow {
 		color:
-			var(--champagne);
+			var(--warm-white);
 
 		font-size:
 			0.62rem;
@@ -2931,7 +2844,7 @@ const guestOptions = Array.from(
 			block;
 
 		color:
-			var(--golden-sand);
+			var(--ivory);
 
 		font-size:
 			clamp(
@@ -2958,22 +2871,51 @@ const guestOptions = Array.from(
 			var(--warm-white);
 
 		font-family:
-			'Cormorant Garamond',
+			Georgia,
+			'Times New Roman',
 			serif;
 
 		font-size:
 			clamp(
-				3.8rem,
+				1.8rem,
 				14vw,
 				6.5rem
 			);
 
-		font-weight: 700;
+		font-weight: 400;
+		font-style: italic;
 
-		line-height: 1.05;
+		line-height: 1.15;
 
 		text-shadow:
-			0 2px 8px rgba(40, 25, 10, 0.4);
+			0 2px 8px rgba(40, 25, 10, 0.42);
+	}
+
+	.location__heading h2 small {
+		display: block;
+		margin-bottom: 0.15rem;
+		color: var(--ivory);
+		font-family:
+			'Cormorant Garamond',
+			serif;
+		font-size: 0.44em;
+		font-style: normal;
+		font-weight: 600;
+		letter-spacing: 0.2em;
+		line-height: 1;
+		text-transform: uppercase;
+	}
+
+	.location__heading h2 strong {
+		display: block;
+		color: var(--warm-white);
+		font-family:
+			Georgia,
+			'Times New Roman',
+			serif;
+		font-size: 1em;
+		font-style: italic;
+		font-weight: 400;
 	}
 
 
@@ -3072,7 +3014,14 @@ const guestOptions = Array.from(
 
 	.dress-code {
 		background:
-			var(--warm-white);
+			linear-gradient(
+				180deg,
+				#c7b39f 0%,
+				#c7b39f 10%,
+				#d8cbbb 28%,
+				#d8cbbb 52%,
+				#f2eee7 100%
+			);
 	}
 
 
@@ -3183,122 +3132,6 @@ const guestOptions = Array.from(
 
 
 	/* =====================================================
-	   REGALOS
-	===================================================== */
-
-	.gifts {
-		display:
-			grid;
-
-		align-items:
-			center;
-
-		gap:
-			2rem;
-
-		background:
-			var(--ivory);
-	}
-
-
-	.gifts__content {
-		width:
-			min(
-				100%,
-				36rem
-			);
-
-		margin:
-			0 auto;
-	}
-
-
-	.gifts__content > p {
-		color:
-			var(--brown);
-
-		font-size:
-			1rem;
-
-		line-height:
-			1.8;
-	}
-
-
-	.gifts__event {
-		margin:
-			1.5rem 0;
-
-		padding:
-			1.25rem;
-
-		border-left:
-			0.3rem solid
-			var(--olive);
-
-		background:
-			var(--warm-white);
-	}
-
-
-	.gifts__event span,
-	.gifts__event strong {
-		display:
-			block;
-	}
-
-
-	.gifts__event span {
-		color:
-			var(--olive);
-	}
-
-
-	.gifts__event strong {
-		color:
-			var(--espresso);
-	}
-
-
-	.gifts__monogram {
-		width:
-			11rem;
-
-		height:
-			11rem;
-
-		margin:
-			0 auto;
-
-		border:
-			1px solid
-			var(--champagne);
-
-		border-radius:
-			50%;
-
-		display:
-			grid;
-
-		place-items:
-			center;
-
-		background:
-			var(--olive);
-
-		color:
-			var(--warm-white);
-
-		font-family:
-			'Parisienne',
-			cursive;
-
-		font-size:
-			3.5rem;
-	}
-
-
-	/* =====================================================
 	   AVISOS - NUEVO DISEÑO
 	===================================================== */
 
@@ -3308,15 +3141,12 @@ const guestOptions = Array.from(
 
 		background:
 			linear-gradient(
-				150deg,
-				var(--warm-white)
-					0%,
-
-				#f5eee5
-					48%,
-
-				var(--ivory)
-					100%
+				180deg,
+				#f2eee7 0%,
+				#ede7de 24%,
+				#e3d6c6 52%,
+				#f5eee5 76%,
+				var(--ivory) 100%
 			);
 
 		color:
@@ -3479,12 +3309,7 @@ const guestOptions = Array.from(
 			1.3rem;
 
 		background:
-			rgba(
-				254,
-				252,
-				248,
-				0.78
-			);
+			rgba(254, 248, 254, 0.78);
 
 		box-shadow:
 			0
@@ -3673,7 +3498,12 @@ const guestOptions = Array.from(
 
 	.rsvp {
 		background:
-			var(--warm-white);
+			linear-gradient(
+				180deg,
+				#c5b6a8 0%,
+				#c5b6a8 78%,
+				#9f9387 100%
+			);
 	}
 
 
@@ -4042,14 +3872,7 @@ const guestOptions = Array.from(
 	===================================================== */
 
 	@media (min-width: 768px) {
-		.section-nav {
-			justify-content:
-				center;
-		}
-
-
-		.story,
-		.gifts {
+		.story {
 			grid-template-columns:
 				repeat(
 					2,
@@ -4204,7 +4027,8 @@ const guestOptions = Array.from(
 				180deg,
 				#ede5da 0%,
 				#ede5da 20%,
-				var(--warm-white) 58%,
+				var(--ivory) 58%,
+				var(--ivory) 92%,
 				var(--ivory) 100%
 			);
 		border: 0;
@@ -4243,7 +4067,18 @@ const guestOptions = Array.from(
 	}
 
 	.countdown-section::after {
-		display: none;
+		position: absolute;
+		right: calc(-4rem - 2px);
+		bottom: calc(-11rem + 2px);
+		width: 16rem;
+		height: 16rem;
+		border: 1px solid rgba(109, 104, 83, 0.16);
+		border-radius: 50%;
+		box-shadow:
+			0 0 0 1.5rem rgba(198, 156, 112, 0.08),
+			0 0 0 3rem rgba(109, 104, 83, 0.05);
+		content: '';
+		pointer-events: none;
 	}
 
 	.countdown-decoration {
