@@ -67,10 +67,6 @@ const calendarParams = new URLSearchParams({
 const calendarUrl =
 	`https://calendar.google.com/calendar/render?${calendarParams.toString()}`;
 
-const guestOptions = Array.from(
-	{ length: rsvp.maxAcompanantes + 1 },
-	(_, index) => index
-);
 ---
 
 <!-- =====================================================
@@ -697,20 +693,22 @@ const guestOptions = Array.from(
 	<form
 		class="rsvp-form"
 		data-rsvp-form
-		data-phone={rsvp.whatsapp}
 		data-reveal-child
 	>
+		<div class="rsvp-form__notice" data-rsvp-notice aria-live="polite">
+			Abre el enlace personalizado que recibiste para confirmar tu asistencia.
+		</div>
+
 		<label>
 			<span>
-				Nombre completo
+				Invitación para
 			</span>
 
 			<input
 				type="text"
 				name="name"
-				autocomplete="name"
-				required
-				placeholder="Escribe tu nombre"
+				readonly
+				placeholder="Cargando invitación..."
 			/>
 		</label>
 
@@ -719,10 +717,7 @@ const guestOptions = Array.from(
 				¿Nos acompañas?
 			</span>
 
-			<select
-				name="attendance"
-				required
-			>
+			<select name="attendance" required disabled>
 				<option
 					value=""
 					selected
@@ -731,11 +726,11 @@ const guestOptions = Array.from(
 					Selecciona una opción
 				</option>
 
-				<option value="Sí, asistiré">
+				<option value="si">
 					Sí, asistiré
 				</option>
 
-				<option value="No podré asistir">
+				<option value="no">
 					No podré asistir
 				</option>
 			</select>
@@ -743,30 +738,12 @@ const guestOptions = Array.from(
 
 		<label>
 			<span>
-				Acompañantes
+				Personas que asistirán
 			</span>
 
-			<select name="guests">
-				{
-					guestOptions.map((cantidad) => (
-						<option value={cantidad}>
-							{cantidad}
-						</option>
-					))
-				}
+			<select name="guests" required disabled>
+				<option value="">Selecciona una cantidad</option>
 			</select>
-		</label>
-
-		<label>
-			<span>
-				Mensaje o restricción alimentaria
-			</span>
-
-			<textarea
-				name="message"
-				rows="3"
-				placeholder="Opcional"
-			></textarea>
 		</label>
 
 		<button
@@ -776,8 +753,9 @@ const guestOptions = Array.from(
 				rsvp-form__submit
 			"
 			type="submit"
+			disabled
 		>
-			Confirmar por WhatsApp
+			Confirmar asistencia
 		</button>
 	</form>
 </section>
@@ -826,6 +804,8 @@ const guestOptions = Array.from(
 
 
 <script>
+	import { supabase } from '../lib/supabase';
+
 	const countdown =
 		document.querySelector<HTMLElement>(
 			'[data-event-countdown]'
@@ -905,50 +885,257 @@ const guestOptions = Array.from(
 		);
 
 
+	type InvitacionPublica = {
+		nombre_invitado: string;
+		invitados_permitidos: number;
+		asistentes_confirmados: number;
+		estado: string;
+	};
+
 	const rsvpForm =
 		document.querySelector<HTMLFormElement>(
 			'[data-rsvp-form]'
 		);
 
+	const rsvpNotice =
+		rsvpForm?.querySelector<HTMLElement>(
+			'[data-rsvp-notice]'
+		);
+
+	const nameInput =
+		rsvpForm?.elements.namedItem(
+			'name'
+		) as HTMLInputElement | null;
+
+	const attendanceSelect =
+		rsvpForm?.elements.namedItem(
+			'attendance'
+		) as HTMLSelectElement | null;
+
+	const guestsSelect =
+		rsvpForm?.elements.namedItem(
+			'guests'
+		) as HTMLSelectElement | null;
+
+	const submitButton =
+		rsvpForm?.querySelector<HTMLButtonElement>(
+			'[type="submit"]'
+		);
+
+	const pathCode =
+		window.location.pathname.match(
+			/^\/i\/([^/]+)\/?$/
+		)?.[1];
+
+	const invitationCode =
+		decodeURIComponent(
+			pathCode ??
+				new URLSearchParams(
+					window.location.search
+				).get('codigo') ??
+				''
+		).trim();
+
+	let currentInvitation:
+		| InvitacionPublica
+		| null = null;
+
+	const setRsvpNotice = (
+		message: string,
+		status: 'info' | 'success' | 'error' = 'info'
+	) => {
+		if (!rsvpNotice) return;
+		rsvpNotice.textContent = message;
+		rsvpNotice.dataset.status = status;
+	};
+
+	const populateGuestOptions = (
+		maximum: number,
+		selected = 1
+	) => {
+		if (!guestsSelect) return;
+
+		guestsSelect.replaceChildren();
+
+		for (let amount = 1; amount <= maximum; amount += 1) {
+			const option = document.createElement('option');
+			option.value = String(amount);
+			option.textContent =
+				amount === 1
+					? '1 persona'
+					: `${amount} personas`;
+			option.selected = amount === selected;
+			guestsSelect.append(option);
+		}
+	};
+
+	const loadInvitation = async () => {
+		if (!invitationCode) {
+			setRsvpNotice(
+				'Abre el enlace personalizado que recibiste para confirmar tu asistencia.'
+			);
+			return;
+		}
+
+		setRsvpNotice('Estamos validando tu invitación...');
+
+		const { data, error } = await supabase.rpc(
+			'buscar_invitacion',
+			{ p_codigo: invitationCode }
+		);
+
+		const invitation =
+			(data?.[0] ?? null) as InvitacionPublica | null;
+
+		if (error || !invitation) {
+			setRsvpNotice(
+				'No pudimos encontrar esta invitación. Revisa que el enlace esté completo.',
+				'error'
+			);
+			return;
+		}
+
+		currentInvitation = invitation;
+
+		if (nameInput) {
+			nameInput.value = invitation.nombre_invitado;
+		}
+
+		if (attendanceSelect) {
+			attendanceSelect.disabled = false;
+		}
+
+		if (guestsSelect) {
+			populateGuestOptions(
+				invitation.invitados_permitidos,
+				Math.max(
+					1,
+					invitation.asistentes_confirmados || 1
+				)
+			);
+			guestsSelect.disabled = false;
+		}
+
+		if (submitButton) {
+			submitButton.disabled = false;
+		}
+
+		if (invitation.estado === 'confirmado') {
+			if (attendanceSelect) {
+				attendanceSelect.value = 'si';
+			}
+
+			setRsvpNotice(
+				`Tu respuesta actual es: ${invitation.asistentes_confirmados} ${invitation.asistentes_confirmados === 1 ? 'persona confirmada' : 'personas confirmadas'}. Puedes actualizarla si lo necesitas.`,
+				'success'
+			);
+			return;
+		}
+
+		if (invitation.estado === 'no_asiste') {
+			if (attendanceSelect) {
+				attendanceSelect.value = 'no';
+			}
+
+			setRsvpNotice(
+				'Registramos que no podrán acompañarnos. Puedes cambiar tu respuesta si lo necesitas.'
+			);
+			return;
+		}
+
+		setRsvpNotice(
+			`Esta invitación permite confirmar hasta ${invitation.invitados_permitidos} ${invitation.invitados_permitidos === 1 ? 'persona' : 'personas'}.`
+		);
+	};
+
+	attendanceSelect?.addEventListener(
+		'change',
+		() => {
+			if (!guestsSelect) return;
+
+			const willAttend =
+				attendanceSelect.value === 'si';
+
+			guestsSelect.disabled = !willAttend;
+
+			if (!willAttend) {
+				guestsSelect.value =
+					guestsSelect.options[0]?.value ?? '1';
+			}
+		}
+	);
+
 	rsvpForm?.addEventListener(
 		'submit',
-		(event) => {
+		async (event) => {
 			event.preventDefault();
 
-			const formData =
-				new FormData(rsvpForm);
+			if (
+				!currentInvitation ||
+				!attendanceSelect ||
+				!guestsSelect ||
+				!submitButton
+			) {
+				return;
+			}
 
-			const phone =
-				rsvpForm.dataset.phone ?? '';
+			const willAttend =
+				attendanceSelect.value === 'si';
 
-			const message = [
-				'Hola, quiero confirmar mi asistencia a la boda.',
+			const attendees = willAttend
+				? Number(guestsSelect.value)
+				: 0;
 
-				`Nombre: ${
-					formData.get('name') ?? ''
-				}`,
+			if (
+				!Number.isInteger(attendees) ||
+				attendees < 0 ||
+				attendees > currentInvitation.invitados_permitidos
+			) {
+				setRsvpNotice(
+					'Selecciona una cantidad válida de asistentes.',
+					'error'
+				);
+				return;
+			}
 
-				`Asistencia: ${
-					formData.get('attendance') ?? ''
-				}`,
+			submitButton.disabled = true;
+			submitButton.textContent = 'Guardando respuesta...';
 
-				`Acompañantes: ${
-					formData.get('guests') ?? '0'
-				}`,
+			const { data, error } = await supabase.rpc(
+				'confirmar_asistencia',
+				{
+					p_codigo: invitationCode,
+					p_asistentes: attendees,
+				}
+			);
 
-				`Mensaje: ${
-					formData.get('message') ||
-					'Sin comentarios'
-				}`,
-			].join('\n');
+			submitButton.disabled = false;
+			submitButton.textContent = 'Confirmar asistencia';
 
-			window.open(
-				`https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
-				'_blank',
-				'noopener,noreferrer'
+			if (error || data !== true) {
+				setRsvpNotice(
+					'No pudimos guardar tu respuesta. Inténtalo nuevamente.',
+					'error'
+				);
+				return;
+			}
+
+			currentInvitation.asistentes_confirmados = attendees;
+			currentInvitation.estado =
+				attendees === 0
+					? 'no_asiste'
+					: 'confirmado';
+
+			setRsvpNotice(
+				attendees === 0
+					? 'Tu respuesta se guardó correctamente. Gracias por avisarnos.'
+					: `¡Gracias! Confirmamos la asistencia de ${attendees} ${attendees === 1 ? 'persona' : 'personas'}.`,
+				'success'
 			);
 		}
 	);
+
+	void loadInvitation();
 
 
 	const revealSections =
@@ -3571,6 +3758,31 @@ const guestOptions = Array.from(
 	}
 
 
+	.rsvp-form__notice {
+		margin-bottom: 1.25rem;
+		padding: 0.95rem 1rem;
+		border: 1px solid rgba(109, 104, 83, 0.22);
+		border-radius: 0.9rem;
+		background: rgba(236, 228, 217, 0.55);
+		color: var(--espresso);
+		font-size: 0.82rem;
+		line-height: 1.55;
+		text-align: center;
+	}
+
+	.rsvp-form__notice[data-status='success'] {
+		border-color: rgba(109, 104, 83, 0.48);
+		background: rgba(109, 104, 83, 0.14);
+		color: var(--olive);
+	}
+
+	.rsvp-form__notice[data-status='error'] {
+		border-color: rgba(112, 76, 50, 0.38);
+		background: rgba(112, 76, 50, 0.1);
+		color: var(--warm-coffee);
+	}
+
+
 	.rsvp-form label > span {
 		margin-bottom:
 			0.5rem;
@@ -3628,6 +3840,12 @@ const guestOptions = Array.from(
 
 		margin-top:
 			0.5rem;
+	}
+
+	.rsvp-form__submit:disabled,
+	.rsvp-form select:disabled {
+		cursor: not-allowed;
+		opacity: 0.58;
 	}
 
 

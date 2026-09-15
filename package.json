@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@fontsource/parisienne": "^5.2.8",
+    "@supabase/supabase-js": "^2.116.0",
     "astro": "^7.2.9"
   },
   "allowScripts": {

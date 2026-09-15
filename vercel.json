@@ -1,0 +1,8 @@
+{
+	"rewrites": [
+		{
+			"source": "/i/:codigo",
+			"destination": "/?codigo=:codigo"
+		}
+	]
+}

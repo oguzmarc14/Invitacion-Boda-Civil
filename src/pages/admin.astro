@@ -1,0 +1,992 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title="Panel de invitados | Nayzeth & Adán"
+	description="Panel privado para administrar las invitaciones."
+>
+	<main class="admin-shell">
+		<header class="admin-header">
+			<div>
+				<span>Panel privado</span>
+				<h1>Lista de invitados</h1>
+				<p>Nayzeth &amp; Adán · Boda civil</p>
+			</div>
+
+			<button class="button button--ghost" type="button" data-logout hidden>
+				Cerrar sesión
+			</button>
+		</header>
+
+		<section class="login-card" data-login-panel>
+			<div class="login-card__ornament" aria-hidden="true">N &amp; A</div>
+			<span>Acceso administrativo</span>
+			<h2>Bienvenida</h2>
+			<p>Ingresa con la cuenta autorizada para administrar las invitaciones.</p>
+
+			<form data-login-form>
+				<label>
+					Correo electrónico
+					<input type="email" name="email" autocomplete="email" required />
+				</label>
+
+				<label>
+					Contraseña
+					<input
+						type="password"
+						name="password"
+						autocomplete="current-password"
+						minlength="8"
+						required
+					/>
+				</label>
+
+				<button class="button button--primary" type="submit">
+					Entrar al panel
+				</button>
+			</form>
+
+			<p class="feedback" data-login-feedback aria-live="polite"></p>
+		</section>
+
+		<section class="dashboard" data-dashboard hidden>
+			<div class="stats" aria-label="Resumen de invitados">
+				<article>
+					<span>Invitaciones</span>
+					<strong data-stat-invitations>0</strong>
+				</article>
+				<article>
+					<span>Personas permitidas</span>
+					<strong data-stat-allowed>0</strong>
+				</article>
+				<article>
+					<span>Asistentes confirmados</span>
+					<strong data-stat-confirmed>0</strong>
+				</article>
+				<article>
+					<span>Pendientes</span>
+					<strong data-stat-pending>0</strong>
+				</article>
+			</div>
+
+			<div class="dashboard-grid">
+				<aside class="panel-card">
+					<span class="panel-card__eyebrow" data-form-eyebrow>Nueva invitación</span>
+					<h2 data-form-title>Agregar familia o invitado</h2>
+					<p>Define quién recibirá el enlace y cuántas personas podrá confirmar.</p>
+
+					<form data-invitation-form>
+						<input type="hidden" name="id" />
+
+						<label>
+							Nombre de la invitación
+							<input
+								type="text"
+								name="name"
+								placeholder="Ej. Familia López"
+								required
+							/>
+						</label>
+
+						<label>
+							Personas permitidas
+							<input type="number" name="allowed" min="1" max="20" value="1" required />
+						</label>
+
+						<label>
+							Teléfono de WhatsApp
+							<input
+								type="tel"
+								name="phone"
+								inputmode="tel"
+								placeholder="5214491234567"
+							/>
+							<small>Incluye el código de país para habilitar el envío directo.</small>
+						</label>
+
+						<div class="form-actions">
+							<button class="button button--primary" type="submit" data-save-button>
+								Crear invitación
+							</button>
+							<button class="button button--ghost" type="button" data-cancel-edit hidden>
+								Cancelar
+							</button>
+						</div>
+					</form>
+
+					<p class="feedback" data-form-feedback aria-live="polite"></p>
+				</aside>
+
+				<section class="panel-card panel-card--list">
+					<div class="list-heading">
+						<div>
+							<span class="panel-card__eyebrow">Control de asistencia</span>
+							<h2>Invitaciones registradas</h2>
+						</div>
+
+						<button class="button button--ghost" type="button" data-refresh>
+							Actualizar
+						</button>
+					</div>
+
+					<p class="feedback" data-list-feedback aria-live="polite"></p>
+					<div class="guest-list" data-guest-list></div>
+				</section>
+			</div>
+
+			<details class="password-card">
+				<summary>Cambiar contraseña</summary>
+				<form data-password-form>
+					<label>
+						Nueva contraseña
+						<input
+							type="password"
+							name="password"
+							minlength="8"
+							autocomplete="new-password"
+							required
+						/>
+					</label>
+					<button class="button button--primary" type="submit">Actualizar contraseña</button>
+				</form>
+				<p class="feedback" data-password-feedback aria-live="polite"></p>
+			</details>
+		</section>
+	</main>
+</Layout>
+
+<script>
+	import { supabase } from '../lib/supabase';
+
+	type Invitado = {
+		id: string;
+		nombre_invitado: string;
+		codigo: string;
+		invitados_permitidos: number;
+		asistentes_confirmados: number;
+		estado: 'pendiente' | 'confirmado' | 'no_asiste';
+		telefono: string | null;
+		fecha_confirmacion: string | null;
+		created_at: string;
+	};
+
+	const loginPanel = document.querySelector<HTMLElement>('[data-login-panel]');
+	const dashboard = document.querySelector<HTMLElement>('[data-dashboard]');
+	const logoutButton = document.querySelector<HTMLButtonElement>('[data-logout]');
+	const loginForm = document.querySelector<HTMLFormElement>('[data-login-form]');
+	const invitationForm = document.querySelector<HTMLFormElement>('[data-invitation-form]');
+	const passwordForm = document.querySelector<HTMLFormElement>('[data-password-form]');
+	const guestList = document.querySelector<HTMLElement>('[data-guest-list]');
+	const loginFeedback = document.querySelector<HTMLElement>('[data-login-feedback]');
+	const formFeedback = document.querySelector<HTMLElement>('[data-form-feedback]');
+	const listFeedback = document.querySelector<HTMLElement>('[data-list-feedback]');
+	const passwordFeedback = document.querySelector<HTMLElement>('[data-password-feedback]');
+	const saveButton = document.querySelector<HTMLButtonElement>('[data-save-button]');
+	const cancelEditButton = document.querySelector<HTMLButtonElement>('[data-cancel-edit]');
+	const formEyebrow = document.querySelector<HTMLElement>('[data-form-eyebrow]');
+	const formTitle = document.querySelector<HTMLElement>('[data-form-title]');
+
+	let guests: Invitado[] = [];
+
+	const setFeedback = (
+		element: HTMLElement | null,
+		message: string,
+		status: 'success' | 'error' | 'info' = 'info'
+	) => {
+		if (!element) return;
+		element.textContent = message;
+		element.dataset.status = status;
+	};
+
+	const escapeHtml = (value: string) =>
+		value.replace(
+			/[&<>'"]/g,
+			(character) =>
+				({
+					'&': '&amp;',
+					'<': '&lt;',
+					'>': '&gt;',
+					"'": '&#39;',
+					'"': '&quot;',
+				})[character] ?? character
+		);
+
+	const invitationUrl = (code: string) =>
+		`${window.location.origin}/i/${encodeURIComponent(code)}`;
+
+	const formatDate = (date: string | null) => {
+		if (!date) return 'Sin confirmar';
+
+		return new Intl.DateTimeFormat('es-MX', {
+			dateStyle: 'medium',
+			timeStyle: 'short',
+		}).format(new Date(date));
+	};
+
+	const statusLabel = (status: Invitado['estado']) =>
+		({
+			pendiente: 'Pendiente',
+			confirmado: 'Confirmado',
+			no_asiste: 'No asistirá',
+		})[status];
+
+	const updateStats = () => {
+		const values = {
+			'[data-stat-invitations]': guests.length,
+			'[data-stat-allowed]': guests.reduce(
+				(total, guest) => total + guest.invitados_permitidos,
+				0
+			),
+			'[data-stat-confirmed]': guests.reduce(
+				(total, guest) => total + guest.asistentes_confirmados,
+				0
+			),
+			'[data-stat-pending]': guests.filter(
+				(guest) => guest.estado === 'pendiente'
+			).length,
+		};
+
+		Object.entries(values).forEach(([selector, value]) => {
+			const element = document.querySelector<HTMLElement>(selector);
+			if (element) element.textContent = String(value);
+		});
+	};
+
+	const renderGuests = () => {
+		if (!guestList) return;
+
+		if (guests.length === 0) {
+			guestList.innerHTML = `
+				<div class="empty-state">
+					<strong>Aún no hay invitaciones</strong>
+					<span>Utiliza el formulario para registrar la primera.</span>
+				</div>
+			`;
+			updateStats();
+			return;
+		}
+
+		guestList.innerHTML = guests
+			.map((guest) => {
+				const safeName = escapeHtml(guest.nombre_invitado);
+				const safeCode = escapeHtml(guest.codigo);
+				const safePhone = escapeHtml(guest.telefono ?? 'Sin teléfono');
+
+				return `
+					<article class="guest-card">
+						<div class="guest-card__header">
+							<div>
+								<span class="status status--${guest.estado}">${statusLabel(guest.estado)}</span>
+								<h3>${safeName}</h3>
+							</div>
+							<button class="icon-button" type="button" data-action="edit" data-id="${guest.id}" aria-label="Editar ${safeName}">✎</button>
+						</div>
+
+						<div class="guest-card__numbers">
+							<div><strong>${guest.invitados_permitidos}</strong><span>Permitidos</span></div>
+							<div><strong>${guest.asistentes_confirmados}</strong><span>Confirmados</span></div>
+						</div>
+
+						<dl>
+							<div><dt>Código</dt><dd>${safeCode}</dd></div>
+							<div><dt>Teléfono</dt><dd>${safePhone}</dd></div>
+							<div><dt>Respuesta</dt><dd>${formatDate(guest.fecha_confirmacion)}</dd></div>
+						</dl>
+
+						<div class="guest-card__actions">
+							<button class="button button--small button--primary" type="button" data-action="copy" data-id="${guest.id}">Copiar enlace</button>
+							<button class="button button--small button--olive" type="button" data-action="whatsapp" data-id="${guest.id}" ${guest.telefono ? '' : 'disabled'}>Enviar por WhatsApp</button>
+							<button class="button button--small button--danger" type="button" data-action="delete" data-id="${guest.id}">Eliminar</button>
+						</div>
+					</article>
+				`;
+			})
+			.join('');
+
+		updateStats();
+	};
+
+	const loadGuests = async () => {
+		setFeedback(listFeedback, 'Cargando invitaciones...');
+
+		const { data, error } = await supabase
+			.from('invitados')
+			.select('*')
+			.order('created_at', { ascending: false });
+
+		if (error) {
+			setFeedback(
+				listFeedback,
+				'No tienes permisos administrativos o no fue posible cargar la lista.',
+				'error'
+			);
+			return;
+		}
+
+		guests = (data ?? []) as Invitado[];
+		setFeedback(listFeedback, '');
+		renderGuests();
+	};
+
+	const showSession = async (isAuthenticated: boolean) => {
+		if (loginPanel) loginPanel.hidden = isAuthenticated;
+		if (dashboard) dashboard.hidden = !isAuthenticated;
+		if (logoutButton) logoutButton.hidden = !isAuthenticated;
+
+		if (isAuthenticated) {
+			await loadGuests();
+		}
+	};
+
+	const resetInvitationForm = () => {
+		invitationForm?.reset();
+
+		const idInput = invitationForm?.elements.namedItem('id') as HTMLInputElement | null;
+		const allowedInput = invitationForm?.elements.namedItem('allowed') as HTMLInputElement | null;
+
+		if (idInput) idInput.value = '';
+		if (allowedInput) allowedInput.value = '1';
+		if (saveButton) saveButton.textContent = 'Crear invitación';
+		if (cancelEditButton) cancelEditButton.hidden = true;
+		if (formEyebrow) formEyebrow.textContent = 'Nueva invitación';
+		if (formTitle) formTitle.textContent = 'Agregar familia o invitado';
+		setFeedback(formFeedback, '');
+	};
+
+	const createCode = (name: string) => {
+		const slug = name
+			.normalize('NFD')
+			.replace(/[\u0300-\u036f]/g, '')
+			.toLowerCase()
+			.replace(/[^a-z0-9]+/g, '-')
+			.replace(/^-|-$/g, '')
+			.slice(0, 36) || 'invitacion';
+
+		const random = crypto.randomUUID().replaceAll('-', '').slice(0, 10);
+		return `${slug}-${random}`;
+	};
+
+	loginForm?.addEventListener('submit', async (event) => {
+		event.preventDefault();
+		const formData = new FormData(loginForm);
+		const email = String(formData.get('email') ?? '').trim();
+		const password = String(formData.get('password') ?? '');
+
+		setFeedback(loginFeedback, 'Verificando acceso...');
+
+		const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+		if (error) {
+			setFeedback(loginFeedback, 'El correo o la contraseña no son correctos.', 'error');
+			return;
+		}
+
+		loginForm.reset();
+		setFeedback(loginFeedback, '');
+		await showSession(true);
+	});
+
+	logoutButton?.addEventListener('click', async () => {
+		await supabase.auth.signOut();
+		guests = [];
+		renderGuests();
+		await showSession(false);
+	});
+
+	invitationForm?.addEventListener('submit', async (event) => {
+		event.preventDefault();
+
+		const formData = new FormData(invitationForm);
+		const id = String(formData.get('id') ?? '');
+		const name = String(formData.get('name') ?? '').trim();
+		const allowed = Number(formData.get('allowed'));
+		const phone = String(formData.get('phone') ?? '').replace(/\D/g, '');
+		const existingGuest = guests.find((guest) => guest.id === id);
+
+		if (!name || !Number.isInteger(allowed) || allowed < 1 || allowed > 20) {
+			setFeedback(formFeedback, 'Revisa el nombre y la cantidad permitida.', 'error');
+			return;
+		}
+
+		if (existingGuest && allowed < existingGuest.asistentes_confirmados) {
+			setFeedback(
+				formFeedback,
+				'La cantidad permitida no puede ser menor que los asistentes ya confirmados.',
+				'error'
+			);
+			return;
+		}
+
+		if (saveButton) saveButton.disabled = true;
+		setFeedback(formFeedback, id ? 'Guardando cambios...' : 'Creando invitación...');
+
+		const payload = {
+			nombre_invitado: name,
+			invitados_permitidos: allowed,
+			telefono: phone || null,
+		};
+
+		const result = id
+			? await supabase.from('invitados').update(payload).eq('id', id)
+			: await supabase.from('invitados').insert({
+					...payload,
+					codigo: createCode(name),
+					asistentes_confirmados: 0,
+					estado: 'pendiente',
+				});
+
+		if (saveButton) saveButton.disabled = false;
+
+		if (result.error) {
+			setFeedback(formFeedback, 'No fue posible guardar la invitación.', 'error');
+			return;
+		}
+
+		setFeedback(
+			formFeedback,
+			id ? 'Los cambios se guardaron correctamente.' : 'La invitación fue creada.',
+			'success'
+		);
+		resetInvitationForm();
+		await loadGuests();
+	});
+
+	cancelEditButton?.addEventListener('click', resetInvitationForm);
+	document.querySelector('[data-refresh]')?.addEventListener('click', loadGuests);
+
+	guestList?.addEventListener('click', async (event) => {
+		const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-action]');
+		if (!button) return;
+
+		const guest = guests.find((item) => item.id === button.dataset.id);
+		if (!guest) return;
+
+		switch (button.dataset.action) {
+			case 'copy': {
+				await navigator.clipboard.writeText(invitationUrl(guest.codigo));
+				const previous = button.textContent;
+				button.textContent = 'Enlace copiado';
+				window.setTimeout(() => {
+					button.textContent = previous;
+				}, 1600);
+				break;
+			}
+
+			case 'whatsapp': {
+				if (!guest.telefono) return;
+				const message = [
+					`Hola ${guest.nombre_invitado},`,
+					'con mucha alegría queremos compartir nuestra invitación de boda contigo:',
+					invitationUrl(guest.codigo),
+				].join('\n\n');
+
+				window.open(
+					`https://wa.me/${guest.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`,
+					'_blank',
+					'noopener,noreferrer'
+				);
+				break;
+			}
+
+			case 'edit': {
+				if (!invitationForm) return;
+				(invitationForm.elements.namedItem('id') as HTMLInputElement).value = guest.id;
+				(invitationForm.elements.namedItem('name') as HTMLInputElement).value = guest.nombre_invitado;
+				(invitationForm.elements.namedItem('allowed') as HTMLInputElement).value = String(guest.invitados_permitidos);
+				(invitationForm.elements.namedItem('phone') as HTMLInputElement).value = guest.telefono ?? '';
+				if (saveButton) saveButton.textContent = 'Guardar cambios';
+				if (cancelEditButton) cancelEditButton.hidden = false;
+				if (formEyebrow) formEyebrow.textContent = 'Editar invitación';
+				if (formTitle) formTitle.textContent = guest.nombre_invitado;
+				invitationForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				break;
+			}
+
+			case 'delete': {
+				if (!window.confirm(`¿Eliminar la invitación de ${guest.nombre_invitado}?`)) return;
+				const { error } = await supabase.from('invitados').delete().eq('id', guest.id);
+
+				if (error) {
+					setFeedback(listFeedback, 'No fue posible eliminar la invitación.', 'error');
+					return;
+				}
+
+				await loadGuests();
+				break;
+			}
+		}
+	});
+
+	passwordForm?.addEventListener('submit', async (event) => {
+		event.preventDefault();
+		const formData = new FormData(passwordForm);
+		const password = String(formData.get('password') ?? '');
+
+		const { error } = await supabase.auth.updateUser({ password });
+
+		if (error) {
+			setFeedback(passwordFeedback, 'No fue posible actualizar la contraseña.', 'error');
+			return;
+		}
+
+		passwordForm.reset();
+		setFeedback(passwordFeedback, 'La contraseña fue actualizada.', 'success');
+	});
+
+	const { data: sessionData } = await supabase.auth.getSession();
+	await showSession(Boolean(sessionData.session));
+
+	supabase.auth.onAuthStateChange((_event, session) => {
+		window.setTimeout(() => {
+			void showSession(Boolean(session));
+		}, 0);
+	});
+</script>
+
+<style>
+	.admin-shell {
+		min-height: 100svh;
+		padding: clamp(1rem, 3vw, 2.5rem);
+		background:
+			radial-gradient(circle at 8% 5%, rgba(222, 199, 173, 0.55), transparent 22rem),
+			radial-gradient(circle at 92% 15%, rgba(109, 104, 83, 0.18), transparent 25rem),
+			var(--warm-white);
+	}
+
+	.admin-header {
+		width: min(100%, 88rem);
+		margin: 0 auto 2rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.admin-header span,
+	.panel-card__eyebrow,
+	.login-card > span {
+		color: var(--olive-gray);
+		font-size: 0.68rem;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+
+	.admin-header h1 {
+		margin: 0.25rem 0 0;
+		font-size: clamp(1.8rem, 5vw, 3.1rem);
+		font-weight: 400;
+	}
+
+	.admin-header p {
+		margin: 0.3rem 0 0;
+		color: var(--warm-coffee);
+	}
+
+	.login-card,
+	.panel-card,
+	.password-card,
+	.stats article {
+		border: 1px solid rgba(109, 104, 83, 0.18);
+		background: rgba(254, 252, 248, 0.76);
+		box-shadow: 0 1rem 3rem rgba(40, 25, 10, 0.08);
+		backdrop-filter: blur(16px);
+	}
+
+	.login-card {
+		width: min(100%, 29rem);
+		margin: clamp(3rem, 10vh, 7rem) auto;
+		padding: clamp(1.5rem, 6vw, 3rem);
+		border-radius: 1.8rem;
+		text-align: center;
+	}
+
+	.login-card__ornament {
+		width: 5rem;
+		height: 5rem;
+		margin: 0 auto 1.4rem;
+		border: 1px solid var(--golden-sand);
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		background: var(--ivory);
+		color: var(--warm-coffee);
+		font-family: 'Parisienne', cursive;
+		font-size: 1.65rem;
+	}
+
+	.login-card h2,
+	.panel-card h2 {
+		margin: 0.35rem 0 0.6rem;
+		font-size: clamp(1.5rem, 4vw, 2.2rem);
+		font-weight: 400;
+	}
+
+	.login-card p,
+	.panel-card > p {
+		color: var(--warm-coffee);
+		line-height: 1.6;
+	}
+
+	form label {
+		margin: 1rem 0;
+		display: grid;
+		gap: 0.45rem;
+		color: var(--espresso);
+		font-size: 0.76rem;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		text-align: left;
+	}
+
+	form label small {
+		color: var(--olive-gray);
+		font-size: 0.7rem;
+		font-weight: 400;
+		letter-spacing: 0;
+		line-height: 1.4;
+	}
+
+	input {
+		width: 100%;
+		min-height: 3rem;
+		padding: 0.75rem 0.9rem;
+		border: 1px solid rgba(109, 104, 83, 0.3);
+		border-radius: 0.8rem;
+		background: rgba(254, 252, 248, 0.9);
+		color: var(--espresso);
+		outline: none;
+	}
+
+	input:focus {
+		border-color: var(--olive-gray);
+		box-shadow: 0 0 0 3px rgba(109, 104, 83, 0.12);
+	}
+
+	.button {
+		min-height: 2.75rem;
+		padding: 0.7rem 1rem;
+		border: 1px solid transparent;
+		border-radius: 999px;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		cursor: pointer;
+		transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+	}
+
+	.button:hover:not(:disabled) {
+		transform: translateY(-2px);
+	}
+
+	.button:disabled {
+		cursor: not-allowed;
+		opacity: 0.48;
+	}
+
+	.button--primary {
+		background: var(--espresso);
+		color: var(--warm-white);
+		box-shadow: 0 0.55rem 1.2rem rgba(40, 25, 10, 0.16);
+	}
+
+	.button--olive {
+		background: var(--olive-gray);
+		color: var(--warm-white);
+	}
+
+	.button--ghost {
+		border-color: rgba(109, 104, 83, 0.35);
+		background: rgba(254, 252, 248, 0.72);
+		color: var(--espresso);
+	}
+
+	.button--danger {
+		border-color: rgba(112, 76, 50, 0.28);
+		background: transparent;
+		color: var(--warm-coffee);
+	}
+
+	.button--small {
+		min-height: 2.35rem;
+		padding: 0.55rem 0.8rem;
+		font-size: 0.64rem;
+	}
+
+	.login-card .button,
+	.panel-card form .button--primary {
+		width: 100%;
+		margin-top: 0.5rem;
+	}
+
+	.dashboard {
+		width: min(100%, 88rem);
+		margin: 0 auto;
+	}
+
+	.stats {
+		margin-bottom: 1.25rem;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.stats article {
+		padding: 1.25rem;
+		border-radius: 1.15rem;
+	}
+
+	.stats span {
+		display: block;
+		color: var(--olive-gray);
+		font-size: 0.67rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.stats strong {
+		margin-top: 0.5rem;
+		display: block;
+		color: var(--espresso);
+		font-size: 2rem;
+		font-weight: 400;
+	}
+
+	.dashboard-grid {
+		display: grid;
+		grid-template-columns: minmax(18rem, 0.72fr) minmax(0, 1.5fr);
+		align-items: start;
+		gap: 1.25rem;
+	}
+
+	.panel-card {
+		padding: clamp(1.25rem, 3vw, 2rem);
+		border-radius: 1.4rem;
+	}
+
+	.panel-card--list {
+		min-width: 0;
+	}
+
+	.list-heading {
+		margin-bottom: 1rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.form-actions,
+	.guest-card__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+
+	.form-actions .button {
+		flex: 1 1 9rem;
+	}
+
+	.feedback {
+		min-height: 1.25rem;
+		margin: 0.9rem 0 0;
+		color: var(--olive-gray);
+		font-size: 0.78rem;
+		line-height: 1.5;
+	}
+
+	.feedback[data-status='error'] {
+		color: #874838;
+	}
+
+	.feedback[data-status='success'] {
+		color: #4f6048;
+	}
+
+	.guest-list {
+		display: grid;
+		gap: 0.85rem;
+	}
+
+	.guest-card {
+		padding: 1.1rem;
+		border: 1px solid rgba(109, 104, 83, 0.2);
+		border-radius: 1rem;
+		background: rgba(236, 228, 217, 0.42);
+	}
+
+	.guest-card__header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.guest-card h3 {
+		margin: 0.35rem 0 0;
+		font-size: 1.2rem;
+		font-weight: 400;
+	}
+
+	.status {
+		padding: 0.22rem 0.5rem;
+		border-radius: 999px;
+		font-size: 0.58rem;
+		font-weight: 700;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+	}
+
+	.status--pendiente {
+		background: var(--champagne);
+		color: var(--espresso);
+	}
+
+	.status--confirmado {
+		background: var(--olive-gray);
+		color: var(--warm-white);
+	}
+
+	.status--no_asiste {
+		background: var(--warm-coffee);
+		color: var(--warm-white);
+	}
+
+	.icon-button {
+		width: 2.5rem;
+		height: 2.5rem;
+		border: 1px solid rgba(109, 104, 83, 0.3);
+		border-radius: 50%;
+		background: var(--warm-white);
+		color: var(--espresso);
+		font-size: 1rem;
+		cursor: pointer;
+	}
+
+	.guest-card__numbers {
+		margin: 1rem 0;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.7rem;
+	}
+
+	.guest-card__numbers div {
+		padding: 0.75rem;
+		border-radius: 0.8rem;
+		background: rgba(254, 252, 248, 0.72);
+	}
+
+	.guest-card__numbers strong,
+	.guest-card__numbers span {
+		display: block;
+	}
+
+	.guest-card__numbers strong {
+		font-size: 1.45rem;
+		font-weight: 400;
+	}
+
+	.guest-card__numbers span {
+		margin-top: 0.2rem;
+		color: var(--olive-gray);
+		font-size: 0.65rem;
+		text-transform: uppercase;
+	}
+
+	dl {
+		margin: 0 0 1rem;
+		display: grid;
+		gap: 0.4rem;
+	}
+
+	dl div {
+		display: grid;
+		grid-template-columns: 5rem minmax(0, 1fr);
+		gap: 0.6rem;
+	}
+
+	dt {
+		color: var(--olive-gray);
+		font-size: 0.68rem;
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+
+	dd {
+		margin: 0;
+		overflow-wrap: anywhere;
+		font-size: 0.78rem;
+	}
+
+	.empty-state {
+		min-height: 12rem;
+		display: grid;
+		place-content: center;
+		gap: 0.4rem;
+		color: var(--olive-gray);
+		text-align: center;
+	}
+
+	.empty-state strong {
+		color: var(--espresso);
+	}
+
+	.password-card {
+		margin-top: 1.25rem;
+		padding: 1.15rem 1.3rem;
+		border-radius: 1rem;
+	}
+
+	.password-card summary {
+		color: var(--espresso);
+		font-weight: 700;
+		cursor: pointer;
+	}
+
+	.password-card form {
+		max-width: 28rem;
+	}
+
+	[hidden] {
+		display: none !important;
+	}
+
+	@media (max-width: 900px) {
+		.stats {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.dashboard-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.admin-header {
+			align-items: flex-start;
+		}
+
+		.admin-header .button {
+			min-width: 7rem;
+		}
+
+		.stats {
+			gap: 0.65rem;
+		}
+
+		.stats article {
+			padding: 1rem;
+		}
+
+		.list-heading {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+
+		.guest-card__actions .button {
+			flex: 1 1 8rem;
+		}
+	}
+</style>
