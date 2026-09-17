@@ -67,6 +67,11 @@ const calendarParams = new URLSearchParams({
 const calendarUrl =
 	`https://calendar.google.com/calendar/render?${calendarParams.toString()}`;
 
+const rsvpDeadlineMessage =
+	rsvp.fechaLimite.trim().toLowerCase() === 'por confirmar'
+		? 'La fecha límite de confirmación se compartirá próximamente.'
+		: `Por favor confirma antes del ${rsvp.fechaLimite}.`;
+
 ---
 
 <!-- =====================================================
@@ -688,7 +693,7 @@ const calendarUrl =
 		</h2>
 
 		<p>
-			Por favor confirma antes del {rsvp.fechaLimite}.
+			{rsvpDeadlineMessage}
 		</p>
 
 		<div class="heading-ornament" aria-hidden="true">
