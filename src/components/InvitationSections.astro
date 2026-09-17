@@ -722,14 +722,14 @@ const rsvpDeadlineMessage =
 
 		<div class="rsvp-form__guest-card">
 			<span class="rsvp-form__guest-label">Esta invitación está dirigida a</span>
-			<input
+			<textarea
 				class="rsvp-form__name"
-				type="text"
 				name="name"
+				rows="1"
 				readonly
 				placeholder="Cargando invitación..."
 				aria-label="Nombre del invitado"
-			/>
+			></textarea>
 
 			<p class="rsvp-form__allowance" data-rsvp-allowance>
 				Validando los lugares reservados para ti…
@@ -949,7 +949,13 @@ const rsvpDeadlineMessage =
 	const nameInput =
 		rsvpForm?.elements.namedItem(
 			'name'
-		) as HTMLInputElement | null;
+		) as HTMLTextAreaElement | null;
+
+	const resizeNameField = () => {
+		if (!nameInput) return;
+		nameInput.style.height = 'auto';
+		nameInput.style.height = `${nameInput.scrollHeight}px`;
+	};
 
 	const attendanceInputs =
 		Array.from(
@@ -1095,6 +1101,7 @@ const rsvpDeadlineMessage =
 
 		if (nameInput) {
 			nameInput.value = invitation.nombre_invitado;
+			window.requestAnimationFrame(resizeNameField);
 		}
 
 		if (allowanceText) {
@@ -4266,6 +4273,33 @@ const rsvpDeadlineMessage =
 	   DESKTOP
 	===================================================== */
 
+	@media (max-width: 767px) {
+		.rsvp-form__guest-card {
+			min-height: 14.5rem;
+			padding: 2rem 1.2rem 1.85rem;
+			display: grid;
+			align-content: center;
+		}
+
+		.rsvp-form__guest-label {
+			font-size: 0.62rem;
+			line-height: 1.45;
+		}
+
+		.rsvp-form .rsvp-form__name {
+			min-height: 4rem;
+			margin-top: 0.75rem;
+			font-size: clamp(2.75rem, 13vw, 4.25rem);
+			line-height: 1.02;
+		}
+
+		.rsvp-form__allowance {
+			margin-top: 0.8rem;
+			font-size: 1.05rem;
+			line-height: 1.25;
+		}
+	}
+
 	@media (min-width: 768px) {
 		.story {
 			grid-template-columns:
@@ -5836,8 +5870,10 @@ const rsvpDeadlineMessage =
 		z-index: 1;
 		width: 100%;
 		min-width: 0;
-		margin: 0.45rem 0 0;
+		min-height: 3.4rem;
+		margin: 0.55rem 0 0;
 		padding: 0;
+		overflow: hidden;
 		border: 0;
 		background: transparent;
 		color: var(--warm-white);
@@ -5845,8 +5881,11 @@ const rsvpDeadlineMessage =
 		font-size: clamp(2.25rem, 11vw, 3.8rem);
 		line-height: 1.05;
 		text-align: center;
-		text-overflow: ellipsis;
+		text-overflow: clip;
 		text-shadow: 0 2px 10px rgba(40, 25, 10, 0.28);
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+		resize: none;
 	}
 
 	.rsvp-form .rsvp-form__name::placeholder {
