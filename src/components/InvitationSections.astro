@@ -688,8 +688,7 @@ const calendarUrl =
 		</h2>
 
 		<p>
-			Por favor confirma antes del
-			{rsvp.fechaLimite}.
+			Por favor confirma antes del {rsvp.fechaLimite}.
 		</p>
 
 		<div class="heading-ornament" aria-hidden="true">
@@ -5911,8 +5910,9 @@ const calendarUrl =
 		white-space: nowrap;
 	}
 
-	.rsvp-form__choice-content {
+	.rsvp-form label > .rsvp-form__choice-content {
 		min-height: 8.2rem;
+		margin: 0;
 		padding: 1rem 0.7rem;
 		border: 1px solid rgba(109, 104, 83, 0.23);
 		border-radius: 1rem 0.3rem 1rem 0.3rem;
@@ -5923,7 +5923,11 @@ const calendarUrl =
 		gap: 0.35rem;
 		background: rgba(254, 252, 248, 0.35);
 		color: var(--brown);
+		font-size: initial;
+		font-weight: 400;
+		letter-spacing: normal;
 		text-align: center;
+		text-transform: none;
 		transition:
 			border-color 220ms ease,
 			background 220ms ease,
@@ -5999,9 +6003,15 @@ const calendarUrl =
 		text-transform: none;
 	}
 
-	.rsvp-form__select-wrap {
+	.rsvp-form label > .rsvp-form__select-wrap {
 		position: relative;
+		margin: 0;
 		display: block;
+		color: inherit;
+		font-size: initial;
+		font-weight: 400;
+		letter-spacing: normal;
+		text-transform: none;
 	}
 
 	.rsvp-form__select-wrap select {
