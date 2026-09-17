@@ -2147,6 +2147,29 @@ import Layout from '../layouts/Layout.astro';
 			grid-template-columns: 1fr;
 		}
 
+		.guest-card__header {
+			min-height: 8rem;
+			align-items: flex-start;
+		}
+
+		.guest-card__identity {
+			width: calc(100% - 3rem);
+			flex: 1 1 auto;
+		}
+
+		.guest-card h3 {
+			max-width: 100%;
+			margin: 0.65rem 0 0.4rem;
+			font-size: clamp(1.65rem, 7vw, 2.15rem);
+			line-height: 1.12;
+			overflow-wrap: anywhere;
+			white-space: normal;
+		}
+
+		.guest-card .icon-button {
+			flex: 0 0 auto;
+		}
+
 		.guest-card__summary {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
