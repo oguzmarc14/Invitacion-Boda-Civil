@@ -4,12 +4,18 @@ import '@fontsource/parisienne/400.css';
 interface Props {
 	title?: string;
 	description?: string;
+	image?: string;
 }
 
 const {
 	title = 'Invitación de boda civil',
 	description = 'Acompáñanos a celebrar el comienzo de nuestra historia.',
+	image = '/images/galeria/boda_01.webp',
 } = Astro.props;
+
+const productionOrigin = 'https://invitacion-boda-civil.vercel.app';
+const pageUrl = new URL(Astro.url.pathname, productionOrigin).toString();
+const imageUrl = new URL(image, productionOrigin).toString();
 ---
 
 <!doctype html>
@@ -19,6 +25,21 @@ const {
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="theme-color" content="#28190A" />
 		<meta name="description" content={description} />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="es_MX" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={pageUrl} />
+		<meta property="og:image" content={imageUrl} />
+		<meta property="og:image:alt" content="Nayzeth y Adán · Nuestra boda civil" />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={imageUrl} />
+
+		<link rel="canonical" href={pageUrl} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
