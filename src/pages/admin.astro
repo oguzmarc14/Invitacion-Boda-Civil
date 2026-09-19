@@ -720,12 +720,13 @@ import Layout from '../layouts/Layout.astro';
 
 			case 'whatsapp': {
 				if (!guest.telefono) return;
+				const shareUrl = `${invitationUrl(guest.codigo)}?v=2`;
 				const message = [
-					`Hola, ${guest.nombre_invitado} 🤍`,
+					`Hola, ${guest.nombre_invitado}`,
 					'Con mucha alegría queremos compartir contigo la invitación a nuestra boda civil.',
 					'Será muy especial contar con tu presencia en este día tan importante para nosotros. Puedes consultar todos los detalles y confirmar tu asistencia en el siguiente enlace:',
-					invitationUrl(guest.codigo),
-					'Con cariño,\nNayzeth & Adán 💍',
+					shareUrl,
+					'Con cariño,\nNayzeth & Adán',
 				].join('\n\n');
 
 				window.open(
