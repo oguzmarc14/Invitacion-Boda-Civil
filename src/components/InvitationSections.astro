@@ -953,9 +953,17 @@ const rsvpDeadlineMessage =
 
 	const resizeNameField = () => {
 		if (!nameInput) return;
+		const mobileMinimumHeight = 120;
+		const desktopMinimumHeight = 54;
+		const minimumHeight = window.matchMedia('(max-width: 767px)').matches
+			? mobileMinimumHeight
+			: desktopMinimumHeight;
+
 		nameInput.style.height = 'auto';
-		nameInput.style.height = `${nameInput.scrollHeight}px`;
+		nameInput.style.height = `${Math.max(nameInput.scrollHeight, minimumHeight)}px`;
 	};
+
+	window.addEventListener('resize', resizeNameField);
 
 	const attendanceInputs =
 		Array.from(
@@ -4273,33 +4281,6 @@ const rsvpDeadlineMessage =
 	   DESKTOP
 	===================================================== */
 
-	@media (max-width: 767px) {
-		.rsvp-form__guest-card {
-			min-height: 14.5rem;
-			padding: 2rem 1.2rem 1.85rem;
-			display: grid;
-			align-content: center;
-		}
-
-		.rsvp-form__guest-label {
-			font-size: 0.62rem;
-			line-height: 1.45;
-		}
-
-		.rsvp-form .rsvp-form__name {
-			min-height: 4rem;
-			margin-top: 0.75rem;
-			font-size: clamp(2.75rem, 13vw, 4.25rem);
-			line-height: 1.02;
-		}
-
-		.rsvp-form__allowance {
-			margin-top: 0.8rem;
-			font-size: 1.05rem;
-			line-height: 1.25;
-		}
-	}
-
 	@media (min-width: 768px) {
 		.story {
 			grid-template-columns:
@@ -6132,6 +6113,16 @@ const rsvpDeadlineMessage =
 		font-size: 0.61rem;
 		line-height: 1.45;
 		text-align: center;
+	}
+
+	@media (max-width: 767px) {
+		.rsvp-form .rsvp-form__name {
+			min-height: 7.5rem;
+			margin-top: 0.65rem;
+			padding: 0.85rem 0.25rem;
+			font-size: clamp(2rem, 9.5vw, 3rem);
+			line-height: 1.08;
+		}
 	}
 
 	@media (min-width: 768px) {
